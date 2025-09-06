@@ -38,17 +38,17 @@ export function ThemeDemo() {
           <div className="space-y-2">
             <div className="grid grid-cols-5 gap-2">
               <div className="text-xs text-center">Primary</div>
-              <div className="h-8 bg-primary-200 rounded"></div>
-              <div className="h-8 bg-primary-500 rounded"></div>
-              <div className="h-8 bg-primary-700 rounded"></div>
-              <div className="h-8 bg-primary-900 rounded"></div>
+              <div className="h-8 bg-primary-200 rounded" />
+              <div className="h-8 bg-primary-500 rounded" />
+              <div className="h-8 bg-primary-700 rounded" />
+              <div className="h-8 bg-primary-900 rounded" />
             </div>
             <div className="grid grid-cols-5 gap-2">
               <div className="text-xs text-center">Secondary</div>
-              <div className="h-8 bg-secondary-200 rounded"></div>
-              <div className="h-8 bg-secondary-500 rounded"></div>
-              <div className="h-8 bg-secondary-700 rounded"></div>
-              <div className="h-8 bg-secondary-900 rounded"></div>
+              <div className="h-8 bg-secondary-200 rounded" />
+              <div className="h-8 bg-secondary-500 rounded" />
+              <div className="h-8 bg-secondary-700 rounded" />
+              <div className="h-8 bg-secondary-900 rounded" />
             </div>
           </div>
         </div>

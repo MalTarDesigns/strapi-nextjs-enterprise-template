@@ -24,11 +24,11 @@
   ],
   "repository": {
     "type": "git",
-    "url": "https://github.com/MalTarDesigns/strapi-next-monorepo-starter.git"
+    "url": "https://github.com/MalTarDesigns/strapi-nextjs-enterprise-template.git"
   },
-  "homepage": "https://github.com/MalTarDesigns/strapi-next-monorepo-starter",
+  "homepage": "https://github.com/MalTarDesigns/strapi-nextjs-enterprise-template",
   "bugs": {
-    "url": "https://github.com/MalTarDesigns/strapi-next-monorepo-starter/issues"
+    "url": "https://github.com/MalTarDesigns/strapi-nextjs-enterprise-template/issues"
   },
   "keywords": [
     "strapi",

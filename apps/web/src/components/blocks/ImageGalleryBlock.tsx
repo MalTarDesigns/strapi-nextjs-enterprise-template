@@ -111,6 +111,14 @@ export function ImageGalleryBlock({
                   enableLightbox ? "cursor-pointer" : ""
                 }`}
                 onClick={() => openLightbox(index)}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault();
+                    openLightbox(index);
+                  }
+                }}
+                role="button"
+                tabIndex={0}
               >
                 <StrapiBasicImage
                   component={galleryImage.image}

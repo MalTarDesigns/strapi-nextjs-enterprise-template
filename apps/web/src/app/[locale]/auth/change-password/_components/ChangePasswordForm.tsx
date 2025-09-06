@@ -139,6 +139,7 @@ const ChangePasswordFormSchema = z
     }
   })
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 type FormSchemaType = typeof ChangePasswordFormSchema
 
 const changePasswordFormName = "changePasswordForm"

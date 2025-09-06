@@ -60,7 +60,7 @@ export function SiteThemeProvider({
     if (!initialSiteConfig && typeof window !== "undefined") {
       refreshSiteConfig()
     }
-  }, [locale, initialSiteConfig])
+  }, [locale, initialSiteConfig, refreshSiteConfig])
 
   // Apply theme variables on theme token changes
   useEffect(() => {

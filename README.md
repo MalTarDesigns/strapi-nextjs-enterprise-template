@@ -80,8 +80,8 @@ Ready to start a new project? Follow this checklist:
 **1. Clone and Install**
 ```bash
 # Clone repository
-git clone https://github.com/MalTarDesigns/strapi-next-monorepo-starter
-cd strapi-next-monorepo-starter
+git clone https://github.com/MalTarDesigns/strapi-nextjs-enterprise-template
+cd strapi-nextjs-enterprise-template
 
 # Switch to correct Node.js version
 nvm use
@@ -708,7 +708,7 @@ pnpm format:check
 - [Turborepo Documentation](https://turbo.build/repo/docs)
 
 ### Community & Support
-- **GitHub Issues**: [Report bugs and feature requests](https://github.com/MalTarDesigns/strapi-next-monorepo-starter/issues)
+- **GitHub Issues**: [Report bugs and feature requests](https://github.com/MalTarDesigns/strapi-nextjs-enterprise-template/issues)
 - **MalTar Designs**: [Contact for professional support and customization](https://github.com/MalTarDesigns)
 - **Strapi Community**: [Discord Server](https://discord.strapi.io/)
 - **Next.js Community**: [GitHub Discussions](https://github.com/vercel/next.js/discussions)

@@ -69,7 +69,7 @@ export function TestimonialBlock({
         )}
         
         <Paragraph className="mb-6 text-base leading-relaxed">
-          "{testimonial.content}"
+          &ldquo;{testimonial.content}&rdquo;
         </Paragraph>
         
         <div className="flex items-center gap-3">

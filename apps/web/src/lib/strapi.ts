@@ -289,7 +289,7 @@ export const PostSchema = z.object({
 // TYPESCRIPT INTERFACES (Generated from Zod schemas)
 // ============================================================================
 
-export type StrapiImageMedia = z.infer<typeof StrapiImageMediaSchema>
+// StrapiImageMedia is imported from @/types/api
 export type UtilityLink = z.infer<typeof UtilityLinkSchema>
 export type UtilityBasicImage = z.infer<typeof UtilityBasicImageSchema>
 export type UtilityImageWithLink = z.infer<typeof UtilityImageWithLinkSchema>
