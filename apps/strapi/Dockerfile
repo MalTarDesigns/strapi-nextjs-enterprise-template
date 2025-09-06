@@ -4,7 +4,7 @@
 # Created according to following examples:
 # - https://docs.strapi.io/dev-docs/installation/docker#production-dockerfile
 # - https://github.com/vercel/turbo/blob/main/examples/with-docker/apps/api/Dockerfile
-# - https://dev.to/moofoo/creating-a-development-dockerfile-and-docker-composeyml-for-yarn-122-monorepos-using-turborepo-896
+# - https://dev.to/moofoo/creating-a-development-dockerfile-and-docker-composeyml-for-pnpm-122-monorepos-using-turborepo-896
 
 # Customize APP (name of folder in /apps) and WORKSPACE (name from package.json) to match this app
 ARG APP=strapi
@@ -23,7 +23,8 @@ WORKDIR /app
 COPY . .
 
 # see https://turbo.build/repo/docs/reference/command-line-reference#turbo-prune---scopetarget
-RUN yarn global add turbo@^1.13.4
+RUN corepack enable
+RUN npm install -g turbo@^1.13.4
 RUN turbo prune ${WORKSPACE} --docker
 
 # -------------------------- stage installer ---------------------------------
@@ -40,19 +41,20 @@ RUN apk update && apk add --no-cache build-base gcc autoconf automake zlib-dev l
 # First install dependencies (as they change less often)
 COPY .gitignore .gitignore
 COPY --from=pruned /app/out/json/ .
-COPY --from=pruned /app/out/yarn.lock ./yarn.lock
+COPY --from=pruned /app/out/pnpm-lock.yaml ./pnpm-lock.yaml
 
-RUN yarn global add node-gyp
-RUN yarn global add turbo@^1.13.4
+RUN corepack enable
+RUN npm install -g node-gyp
+RUN npm install -g turbo@^1.13.4
 # see https://github.com/moby/buildkit/blob/master/frontend/dockerfile/docs/reference.md#run---mounttypecache
 RUN \
-    --mount=type=cache,target=/usr/local/share/.cache/yarn/v6,sharing=locked \
-    yarn --prefer-offline --frozen-lockfile --ignore-scripts --production
+    --mount=type=cache,target=/root/.local/share/pnpm,sharing=locked \
+    pnpm install --prefer-offline --frozen-lockfile --ignore-scripts --prod
 
-# Because of yarn v1 install sharp explicitly with "--ignore-engines". See https://github.com/lovell/sharp/issues/3871
+# Install sharp explicitly. See https://github.com/lovell/sharp/issues/3871
 RUN \
-    --mount=type=cache,target=/usr/local/share/.cache/yarn/v6,sharing=locked \
-    yarn workspace ${WORKSPACE} add sharp --ignore-engines --prefer-offline --frozen-lockfile
+    --mount=type=cache,target=/root/.local/share/pnpm,sharing=locked \
+    pnpm add sharp --filter=${WORKSPACE} --prefer-offline --frozen-lockfile
 
 ENV PATH /app/apps/${APP}/node_modules/.bin:$PATH
 
@@ -82,4 +84,4 @@ ENV PATH /app/apps/${APP}/node_modules/.bin:$PATH
 
 WORKDIR /app/apps/${APP}
 EXPOSE ${PORT:-1337}
-CMD ["yarn", "start"]
+CMD ["pnpm", "start"]

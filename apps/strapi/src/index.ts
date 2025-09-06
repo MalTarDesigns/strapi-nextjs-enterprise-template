@@ -1,8 +1,8 @@
-import type { Core } from "@strapi/strapi"
+import type { Core } from "@strapi/strapi";
 
-import { registerPopulatePageMiddleware } from "./documentMiddlewares/page"
-import { registerAdminUserSubscriber } from "./lifeCycles/adminUser"
-import { registerUserSubscriber } from "./lifeCycles/user"
+import { registerPopulatePageMiddleware } from "./documentMiddlewares/page";
+import { registerAdminUserSubscriber } from "./lifeCycles/adminUser";
+import { registerUserSubscriber } from "./lifeCycles/user";
 
 export default {
   /**
@@ -21,9 +21,9 @@ export default {
    * run jobs, or perform some special logic.
    */
   bootstrap({ strapi }: { strapi: Core.Strapi }) {
-    registerAdminUserSubscriber({ strapi })
-    registerUserSubscriber({ strapi })
+    registerAdminUserSubscriber({ strapi });
+    registerUserSubscriber({ strapi });
 
-    registerPopulatePageMiddleware({ strapi })
+    registerPopulatePageMiddleware({ strapi });
   },
-}
+};

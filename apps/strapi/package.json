@@ -1,14 +1,20 @@
 {
   "name": "@repo/strapi",
-  "version": "1.0.0",
+  "version": "3.0.0",
   "private": true,
   "license": "MIT",
+  "description": "MalTar Designs enhanced Strapi v5 CMS with advanced content types and security",
+  "author": {
+    "name": "MalTar Designs",
+    "email": "contact@maltardesigns.com",
+    "url": "https://github.com/MalTarDesigns"
+  },
   "types": "./types",
   "scripts": {
     "build": "strapi build",
     "config:dump": "strapi configuration:dump -f dump.json",
     "config:restore": "strapi configuration:restore -f dump.json",
-    "dev": "yarn run:db && yarn develop",
+    "dev": "pnpm run:db && pnpm develop",
     "develop": "strapi develop",
     "develop:watch": "strapi develop --watch-admin",
     "export:all": "strapi export --file strapi-export --no-encrypt",
@@ -17,23 +23,42 @@
     "generate:types": "strapi ts:generate-types",
     "import": "strapi import -f strapi-export.tar.gz",
     "run:db": "docker compose up -d db",
+    "seed": "ts-node scripts/seed.ts",
+    "seed:dev": "pnpm run:db && pnpm seed",
     "start": "strapi start",
     "strapi": "strapi",
     "test": "jest --forceExit --detectOpenHandles",
+    "test:watch": "jest --watch --forceExit --detectOpenHandles",
+    "test:coverage": "jest --coverage --forceExit --detectOpenHandles",
+    "test:api": "jest --testPathPattern=tests/api --forceExit --detectOpenHandles",
+    "test:unit": "jest --testPathIgnorePattern=tests/api --forceExit --detectOpenHandles",
     "transfer": "strapi transfer"
   },
   "jest": {
+    "preset": "ts-jest",
     "testEnvironment": "node",
     "testPathIgnorePatterns": [
       "/node_modules/",
       ".tmp",
       ".cache"
+    ],
+    "collectCoverageFrom": [
+      "src/**/*.{ts,js}",
+      "!src/**/*.d.ts",
+      "!src/index.ts",
+      "!src/**/__tests__/**"
+    ],
+    "coverageDirectory": "coverage",
+    "coverageReporters": ["text", "lcov", "html"],
+    "setupFilesAfterEnv": ["<rootDir>/tests/setup.ts"],
+    "testMatch": [
+      "<rootDir>/tests/**/*.test.ts"
     ]
   },
   "dependencies": {
     "@_sh/strapi-plugin-ckeditor": "^6.0.2",
-    "@repo/design-system": "*",
-    "@repo/shared-data": "*",
+    "@repo/design-system": "workspace:*",
+    "@repo/shared-data": "workspace:*",
     "@strapi/plugin-color-picker": "^5.12.4",
     "@strapi/plugin-sentry": "^5.17.0",
     "@strapi/plugin-seo": "2.0.8",
@@ -54,11 +79,19 @@
     "@types/node": "^22",
     "@types/react": "^18",
     "@types/react-dom": "^18",
+    "@types/jest": "^29.5.14",
+    "@types/lodash": "^4.17.13",
+    "@types/supertest": "^6.0.2",
+    "jest": "^29.7.0",
+    "supertest": "^6.3.4",
+    "sqlite3": "^5.1.7",
+    "ts-jest": "^29.2.5",
+    "ts-node": "^10.9.2",
     "typescript": "^5"
   },
   "engines": {
     "node": "22.x.x",
-    "yarn": "1.22.x"
+    "pnpm": ">=9"
   },
   "strapi": {
     "uuid": "@repo/strapi"

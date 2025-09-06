@@ -1,6 +1,6 @@
-const { resolve } = require("node:path")
+const { resolve } = require("node:path");
 
-const project = resolve(process.cwd(), "tsconfig.json")
+const project = resolve(process.cwd(), "tsconfig.json");
 
 /** @type {import("eslint").Linter.Config} */
 module.exports = {
@@ -41,4 +41,4 @@ module.exports = {
       },
     },
   ],
-}
+};

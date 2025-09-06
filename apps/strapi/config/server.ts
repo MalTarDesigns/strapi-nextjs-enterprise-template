@@ -1,4 +1,4 @@
-import cronTasks from "./cron-tasks"
+import cronTasks from "./cron-tasks";
 
 export default ({ env }) => ({
   host: env("HOST", "0.0.0.0"),
@@ -13,4 +13,4 @@ export default ({ env }) => ({
     enabled: env.bool("CRON_ENABLED", false),
     tasks: cronTasks,
   },
-})
+});

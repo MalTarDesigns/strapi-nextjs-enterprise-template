@@ -2,7 +2,7 @@
  * internal-job controller
  */
 
-import { factories } from "@strapi/strapi"
+import { factories } from "@strapi/strapi";
 
 export default factories.createCoreController(
   "api::internal-job.internal-job",
@@ -12,9 +12,9 @@ export default factories.createCoreController(
 
       const result = await strapi
         .service("api::internal-job.internal-job")
-        .runAll("RECALCULATE_FULLPATH")
+        .runAll("RECALCULATE_FULLPATH");
 
-      return result
+      return result;
     },
 
     runCreateRedirectsAll: async (ctx) => {
@@ -22,9 +22,9 @@ export default factories.createCoreController(
 
       const result = await strapi
         .service("api::internal-job.internal-job")
-        .runAll("CREATE_REDIRECT")
+        .runAll("CREATE_REDIRECT");
 
-      return result
+      return result;
     },
-  })
-)
+  }),
+);

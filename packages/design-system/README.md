@@ -35,7 +35,7 @@ Tailwind v4 builds its config directly from CSS, not JS/TS. Strapi's CSS injecti
 - **Styles Injection:**  
   Inject the compiled styles in `apps/strapi/src/admin/app.tsx`:
   ```js
-  import s from "@repo/design-system/styles-strapi.json"
+  import s from "@repo/design-system/styles-strapi.json";
   ```
   This is a serialized string, because you cannot simply inject CSS into Strapi Admin. (at the time of writing)
 - **CKEditor Config:**  

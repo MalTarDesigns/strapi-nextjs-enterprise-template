@@ -1,9 +1,9 @@
 export default ({ env }) => {
-  const awsS3Config = prepareAwsS3Config(env)
+  const awsS3Config = prepareAwsS3Config(env);
   if (!awsS3Config) {
     console.info(
-      "AWS S3 upload configuration is not complete. Local file storage will be used."
-    )
+      "AWS S3 upload configuration is not complete. Local file storage will be used.",
+    );
   }
 
   return {
@@ -50,29 +50,29 @@ export default ({ env }) => {
     //     },
     //   },
     // },
-  }
-}
+  };
+};
 
 const localUploadConfig: any = {
   // Local provider setup
   // https://docs.strapi.io/dev-docs/plugins/upload
   sizeLimit: 250 * 1024 * 1024, // 256mb in bytes,
-}
+};
 
 const prepareAwsS3Config = (env) => {
-  const awsAccessKeyId = env("AWS_ACCESS_KEY_ID")
-  const awsAccessSecret = env("AWS_ACCESS_SECRET")
-  const awsRegion = env("AWS_REGION")
-  const awsBucket = env("AWS_BUCKET")
+  const awsAccessKeyId = env("AWS_ACCESS_KEY_ID");
+  const awsAccessSecret = env("AWS_ACCESS_SECRET");
+  const awsRegion = env("AWS_REGION");
+  const awsBucket = env("AWS_BUCKET");
   const awsRequirements = [
     awsAccessKeyId,
     awsAccessSecret,
     awsRegion,
     awsBucket,
-  ]
+  ];
   const awsRequirementsOk = awsRequirements.every(
-    (req) => req != null && req !== ""
-  )
+    (req) => req != null && req !== "",
+  );
 
   if (awsRequirementsOk) {
     return {
@@ -98,8 +98,8 @@ const prepareAwsS3Config = (env) => {
         uploadStream: {},
         delete: {},
       },
-    }
+    };
   }
 
-  return undefined
-}
+  return undefined;
+};

@@ -1,9 +1,9 @@
-import { useState } from "react"
-import { Button, Flex } from "@strapi/design-system"
+import { useState } from "react";
+import { Button, Flex } from "@strapi/design-system";
 import {
   unstable_useContentManagerContext,
   useNotification,
-} from "@strapi/strapi/admin"
+} from "@strapi/strapi/admin";
 
 const JOBS = [
   {
@@ -20,44 +20,44 @@ const JOBS = [
     successMessage: "All redirects have been successfully created.",
     errorMessage: "Something went wrong while creating redirects.",
   },
-]
+];
 
 const InternalJobsRunActions = () => {
-  const [loading, setLoading] = useState<boolean>(false)
-  const { slug } = unstable_useContentManagerContext()
-  const { toggleNotification } = useNotification()
+  const [loading, setLoading] = useState<boolean>(false);
+  const { slug } = unstable_useContentManagerContext();
+  const { toggleNotification } = useNotification();
 
   if (slug !== "api::internal-job.internal-job") {
-    return null
+    return null;
   }
 
   const runJob = async (jobType: string) => {
     const ok = confirm(
-      "Are you sure you want to run this job? This may take some time and during that it will affect the performance of Strapi."
-    )
+      "Are you sure you want to run this job? This may take some time and during that it will affect the performance of Strapi.",
+    );
 
     if (!ok) {
-      return
+      return;
     }
 
-    setLoading(true)
+    setLoading(true);
 
-    const job = JOBS.find((j) => j.jobType === jobType)!
+    const job = JOBS.find((j) => j.jobType === jobType)!;
 
-    const response = await fetch(job.endpoint, { method: "POST" })
-    const data = await response.json()
-    setLoading(false)
+    const response = await fetch(job.endpoint, { method: "POST" });
+    const data = await response.json();
+    setLoading(false);
 
     if (!response.ok) {
-      toggleNotification({ message: job.errorMessage, type: "danger" })
-      console.error("An error occured during job execution: ", job, data)
-      return
+      toggleNotification({ message: job.errorMessage, type: "danger" });
+      console.error("An error occured during job execution: ", job, data);
+      return;
     }
 
-    toggleNotification({ message: job.successMessage, type: "success" })
+    toggleNotification({ message: job.successMessage, type: "success" });
 
-    setTimeout(() => window.location.reload(), 1500)
-  }
+    setTimeout(() => window.location.reload(), 1500);
+  };
 
   return (
     <Flex gap={3}>
@@ -72,7 +72,7 @@ const InternalJobsRunActions = () => {
         </Button>
       ))}
     </Flex>
-  )
-}
+  );
+};
 
-export default InternalJobsRunActions
+export default InternalJobsRunActions;

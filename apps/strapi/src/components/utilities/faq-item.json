@@ -1,0 +1,18 @@
+{
+  "collectionName": "components_utilities_faq_items",
+  "info": {
+    "displayName": "FAQ Item",
+    "description": "Individual FAQ item with question and answer"
+  },
+  "options": {},
+  "attributes": {
+    "question": {
+      "type": "string",
+      "required": true
+    },
+    "answer": {
+      "type": "text",
+      "required": true
+    }
+  }
+}

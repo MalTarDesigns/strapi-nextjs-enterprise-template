@@ -1,5 +1,8 @@
 export default [
   "strapi::errors",
+  "global::rate-limiter",
+  "global::security-audit", 
+  "global::schema-protection",
   {
     name: "strapi::security",
     config: {
@@ -44,17 +47,73 @@ export default [
             "market-assets.strapi.io",
             "*.amazonaws.com",
           ],
+          "frame-ancestors": ["'none'"],
+          "upgrade-insecure-requests": null,
         },
+      },
+      crossOriginEmbedderPolicy: false,
+      crossOriginOpenerPolicy: false,
+      crossOriginResourcePolicy: { policy: "cross-origin" },
+      frameguard: { action: "deny" },
+      hsts: {
+        maxAge: 31536000,
+        includeSubDomains: true,
+        preload: true,
+      },
+      noSniff: true,
+      originAgentCluster: true,
+      permittedCrossDomainPolicies: false,
+      referrerPolicy: "no-referrer",
+      xssFilter: true,
+    },
+  },
+  {
+    name: "strapi::cors",
+    config: {
+      enabled: true,
+      headers: "*",
+      origin: [
+        "http://localhost:3000",
+        "http://127.0.0.1:3000",
+        process.env.FRONTEND_URL || "https://your-frontend-domain.com",
+      ].filter(Boolean),
+      methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
+      credentials: true,
+      optionsSuccessStatus: 200,
+      maxAge: 86400, // 24 hours
+    },
+  },
+  {
+    name: "strapi::poweredBy",
+    config: {
+      poweredBy: "Strapi <strapi.io>",
+    },
+  },
+  "strapi::logger",
+  "strapi::query",
+  {
+    name: "strapi::body",
+    config: {
+      jsonLimit: "256kb",
+      formLimit: "256kb",
+      textLimit: "256kb",
+      formidable: {
+        maxFileSize: 200 * 1024 * 1024, // 200MB
       },
     },
   },
-  "strapi::cors",
-  "strapi::poweredBy",
-  "strapi::logger",
-  "strapi::query",
-  "strapi::body",
-  "strapi::session",
+  {
+    name: "strapi::session",
+    config: {
+      key: "koa.sess",
+      maxAge: 86400000, // 24 hours
+      httpOnly: true,
+      signed: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: process.env.NODE_ENV === "production" ? "strict" : "lax",
+    },
+  },
   "strapi::favicon",
   "strapi::public",
   "strapi::compression",
-]
+];

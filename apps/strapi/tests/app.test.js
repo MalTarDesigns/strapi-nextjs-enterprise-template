@@ -1,16 +1,16 @@
-const fs = require("fs")
-const { setupStrapi, cleanupStrapi } = require("./helpers/strapi")
+const fs = require("fs");
+const { setupStrapi, cleanupStrapi } = require("./helpers/strapi");
 
-jest.setTimeout(5000)
+jest.setTimeout(5000);
 
 beforeAll(async () => {
-  await setupStrapi()
-})
+  await setupStrapi();
+});
 
 afterAll(async () => {
-  await cleanupStrapi()
-})
+  await cleanupStrapi();
+});
 
 it("strapi is defined", () => {
-  expect(strapi).toBeDefined()
-})
+  expect(strapi).toBeDefined();
+});

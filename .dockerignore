@@ -1,6 +1,60 @@
+# Dependencies
 **/node_modules
+npm-debug.log*
+pnpm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Production builds
 **/.next
-**/.strapi
-**/.tmp
+**/build
 **/dist
 **/out
+
+# Cache directories
+.turbo/
+**/.cache
+**/.tmp
+**/.strapi
+
+# Environment files
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+.env
+
+# Git
+.git
+.gitignore
+README.md
+DOCKER.md
+
+# IDE & OS
+.vscode
+.idea
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
+
+# Logs
+logs
+*.log
+
+# Testing
+coverage
+.nyc_output
+**/__tests__
+**/*.test.*
+**/*.spec.*
+
+# Strapi specific
+**/database/data
+**/exports
+**/public/uploads
+
+# Docker files (to avoid recursive copying)
+docker-compose*.yml
+Dockerfile*
+.dockerignore

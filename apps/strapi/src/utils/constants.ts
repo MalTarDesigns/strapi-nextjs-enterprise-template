@@ -1,1 +1,1 @@
-export const PAGES_HIERARCHY_ENABLED = true
+export const PAGES_HIERARCHY_ENABLED = true;

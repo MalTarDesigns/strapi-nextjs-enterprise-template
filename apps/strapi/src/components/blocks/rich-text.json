@@ -1,0 +1,14 @@
+{
+  "collectionName": "components_blocks_rich_texts",
+  "info": {
+    "displayName": "Rich Text",
+    "description": "Rich text content block with MDX support"
+  },
+  "options": {},
+  "attributes": {
+    "content": {
+      "type": "richtext",
+      "required": true
+    }
+  }
+}

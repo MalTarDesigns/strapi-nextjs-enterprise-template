@@ -1,0 +1,31 @@
+{
+  "collectionName": "components_blocks_cta_banners",
+  "info": {
+    "displayName": "CTA Banner",
+    "description": "Call-to-action banner with title, description, CTA button and background color"
+  },
+  "options": {},
+  "attributes": {
+    "title": {
+      "type": "string",
+      "required": true
+    },
+    "description": {
+      "type": "text",
+      "required": false
+    },
+    "ctaText": {
+      "type": "string",
+      "required": true
+    },
+    "ctaUrl": {
+      "type": "string",
+      "required": true
+    },
+    "backgroundColor": {
+      "type": "customField",
+      "regex": "^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$",
+      "customField": "plugin::color-picker.color"
+    }
+  }
+}

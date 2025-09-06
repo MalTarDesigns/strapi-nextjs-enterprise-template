@@ -17,29 +17,29 @@
  *   - styles-strapi.json: String of CSS to apply all variables to the .ck class, plus the full custom styles CSS.
  *
  */
-const path = require("path")
-const fs = require("fs")
+const path = require("path");
+const fs = require("fs");
 
-const customStylesInputPath = path.resolve(__dirname, "../dist/styles.css")
-let customStylesCssContent = fs.readFileSync(customStylesInputPath, "utf8")
+const customStylesInputPath = path.resolve(__dirname, "../dist/styles.css");
+let customStylesCssContent = fs.readFileSync(customStylesInputPath, "utf8");
 
 const colorOutputJsonPath = path.resolve(
   __dirname,
-  "../dist/ckeditor-color-config.json"
-)
+  "../dist/ckeditor-color-config.json",
+);
 const fontSizeOutputJsonPath = path.resolve(
   __dirname,
-  "../dist/ckeditor-fontSize-config.json"
-)
+  "../dist/ckeditor-fontSize-config.json",
+);
 
 // First collect all CSS variables
-const allVars = []
-const allVarRegex = /(--[\w-]+)\s*:\s*([^;]+);/g
+const allVars = [];
+const allVarRegex = /(--[\w-]+)\s*:\s*([^;]+);/g;
 
-let match
+let match;
 while ((match = allVarRegex.exec(customStylesCssContent)) !== null) {
-  const [, varName, varValue] = match
-  allVars.push({ name: varName, value: varValue })
+  const [, varName, varValue] = match;
+  allVars.push({ name: varName, value: varValue });
 }
 
 // Process variables for different categories
@@ -48,31 +48,31 @@ const colorVars = allVars
   .map((v) => ({
     color: `var(${v.name})`,
     label: v.name.replaceAll(/--/g, ""),
-  }))
+  }));
 
 const fontSizeVars = allVars
   .filter((v) => /^--text-\w+(?!.*--)$/.test(v.name))
-  .map((v) => ({ model: `${v.value}`, title: v.name.replaceAll(/--/g, "") }))
+  .map((v) => ({ model: `${v.value}`, title: v.name.replaceAll(/--/g, "") }));
 
 // Write output files
 fs.writeFileSync(
   colorOutputJsonPath,
   JSON.stringify(colorVars, null, 2),
-  "utf8"
-)
+  "utf8",
+);
 fs.writeFileSync(
   fontSizeOutputJsonPath,
   JSON.stringify(fontSizeVars, null, 2),
-  "utf8"
-)
+  "utf8",
+);
 
-const themeCssFilePath = path.resolve(__dirname, "../dist/styles-strapi.json")
+const themeCssFilePath = path.resolve(__dirname, "../dist/styles-strapi.json");
 fs.writeFileSync(
   themeCssFilePath,
   JSON.stringify(
     `.ck { ${allVars.map((v) => `${v.name}: ${v.value};`).join("\n")} } \n ${customStylesCssContent}`,
     null,
-    2
+    2,
   ),
-  "utf8"
-)
+  "utf8",
+);

@@ -34,9 +34,9 @@
       "type": "string"
     },
     "slug": {
-      "type": "string",
+      "type": "uid",
+      "targetField": "title",
       "required": true,
-      "regex": "^[a-z0-9/-]+$",
       "pluginOptions": {
         "i18n": {
           "localized": true
@@ -53,7 +53,7 @@
       "required": false,
       "unique": true
     },
-    "content": {
+    "blocks": {
       "type": "dynamiczone",
       "components": [
         "sections.image-with-cta-button",

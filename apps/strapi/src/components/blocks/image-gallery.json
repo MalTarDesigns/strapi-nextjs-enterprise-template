@@ -1,0 +1,26 @@
+{
+  "collectionName": "components_blocks_image_galleries",
+  "info": {
+    "displayName": "Image Gallery",
+    "description": "Image gallery with title, multiple images, and layout options"
+  },
+  "options": {},
+  "attributes": {
+    "title": {
+      "type": "string",
+      "required": true
+    },
+    "images": {
+      "type": "media",
+      "multiple": true,
+      "required": true,
+      "allowedTypes": ["images"]
+    },
+    "layout": {
+      "type": "enumeration",
+      "enum": ["grid", "carousel"],
+      "default": "grid",
+      "required": true
+    }
+  }
+}

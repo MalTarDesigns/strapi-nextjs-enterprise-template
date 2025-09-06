@@ -1,0 +1,187 @@
+{
+  "$schema": "https://strapi.io/schemas/strapi-cloud.json",
+  "version": "1.0",
+  "name": "Strapi Next.js Starter",
+  "description": "Production-ready Strapi CMS with Next.js frontend integration",
+  "framework": "strapi",
+  "buildCommand": "pnpm build",
+  "startCommand": "pnpm start",
+  "installCommand": "pnpm install --frozen-lockfile",
+  "rootDirectory": "apps/strapi",
+  "nodeVersion": "22",
+  "packageManager": "pnpm",
+  "regions": ["us-east-1", "eu-west-1"],
+  "environment": {
+    "production": {
+      "variables": {
+        "NODE_ENV": "production",
+        "STRAPI_DISABLE_UPDATE_NOTIFICATION": "true",
+        "STRAPI_HIDE_STARTUP_MESSAGE": "true",
+        "STRAPI_LOG_LEVEL": "warn"
+      },
+      "secrets": [
+        "APP_KEYS",
+        "API_TOKEN_SALT", 
+        "ADMIN_JWT_SECRET",
+        "JWT_SECRET",
+        "TRANSFER_TOKEN_SALT",
+        "DATABASE_URL",
+        "AWS_ACCESS_KEY_ID",
+        "AWS_ACCESS_SECRET",
+        "MAILGUN_API_KEY",
+        "SENTRY_DSN",
+        "STRAPI_PREVIEW_SECRET",
+        "REVALIDATE_SECRET"
+      ]
+    }
+  },
+  "database": {
+    "type": "postgresql",
+    "version": "16",
+    "ssl": true,
+    "backups": {
+      "enabled": true,
+      "retention": "30d",
+      "schedule": "0 2 * * *"
+    }
+  },
+  "storage": {
+    "provider": "aws-s3",
+    "config": {
+      "region": "${AWS_REGION}",
+      "bucket": "${AWS_BUCKET}",
+      "acl": "public-read"
+    }
+  },
+  "scaling": {
+    "instances": {
+      "min": 1,
+      "max": 3
+    },
+    "resources": {
+      "memory": "512MB",
+      "cpu": "0.5vCPU"
+    },
+    "autoscaling": {
+      "enabled": true,
+      "metrics": {
+        "cpu": {
+          "targetPercent": 70
+        },
+        "memory": {
+          "targetPercent": 80
+        }
+      }
+    }
+  },
+  "healthCheck": {
+    "path": "/_health",
+    "interval": 30,
+    "timeout": 10,
+    "retries": 3
+  },
+  "monitoring": {
+    "logging": {
+      "level": "warn",
+      "retention": "7d"
+    },
+    "metrics": {
+      "enabled": true,
+      "retention": "30d"
+    },
+    "alerts": {
+      "errorRate": {
+        "threshold": 5,
+        "period": "5m"
+      },
+      "responseTime": {
+        "threshold": "2s",
+        "period": "5m"
+      }
+    }
+  },
+  "webhooks": [
+    {
+      "name": "frontend-revalidation",
+      "url": "${NEXT_REVALIDATE_URL}/api/revalidate",
+      "headers": {
+        "Authorization": "Bearer ${REVALIDATE_SECRET}"
+      },
+      "events": [
+        "entry.create",
+        "entry.update", 
+        "entry.delete",
+        "entry.publish",
+        "entry.unpublish"
+      ]
+    }
+  ],
+  "plugins": {
+    "upload": {
+      "enabled": true,
+      "config": {
+        "provider": "aws-s3",
+        "providerOptions": {
+          "accessKeyId": "${AWS_ACCESS_KEY_ID}",
+          "secretAccessKey": "${AWS_ACCESS_SECRET}",
+          "region": "${AWS_REGION}",
+          "params": {
+            "ACL": "public-read",
+            "Bucket": "${AWS_BUCKET}"
+          }
+        }
+      }
+    },
+    "email": {
+      "enabled": true,
+      "config": {
+        "provider": "mailgun",
+        "providerOptions": {
+          "key": "${MAILGUN_API_KEY}",
+          "domain": "${MAILGUN_DOMAIN}",
+          "host": "${MAILGUN_HOST}"
+        },
+        "settings": {
+          "defaultFrom": "${MAILGUN_EMAIL}",
+          "defaultReplyTo": "${MAILGUN_EMAIL}"
+        }
+      }
+    },
+    "sentry": {
+      "enabled": true,
+      "config": {
+        "dsn": "${SENTRY_DSN}",
+        "sendMetadata": true
+      }
+    }
+  },
+  "security": {
+    "cors": {
+      "enabled": true,
+      "origin": ["${CLIENT_URL}", "${FRONTEND_URL}"]
+    },
+    "contentSecurityPolicy": {
+      "enabled": true,
+      "useDefaults": true
+    },
+    "rateLimit": {
+      "enabled": true,
+      "max": 100,
+      "duration": 60000
+    }
+  },
+  "buildSettings": {
+    "cache": {
+      "enabled": true,
+      "paths": [
+        "node_modules",
+        ".cache",
+        "build"
+      ]
+    },
+    "environmentVariables": {
+      "NODE_ENV": "production",
+      "STRAPI_DISABLE_UPDATE_NOTIFICATION": "true"
+    }
+  }
+}

@@ -1,0 +1,34 @@
+{
+  "collectionName": "components_utilities_pricing_plans",
+  "info": {
+    "displayName": "Pricing Plan",
+    "description": "Individual pricing plan with features and CTA"
+  },
+  "options": {},
+  "attributes": {
+    "name": {
+      "type": "string",
+      "required": true
+    },
+    "price": {
+      "type": "string",
+      "required": true
+    },
+    "features": {
+      "type": "json",
+      "required": true
+    },
+    "highlighted": {
+      "type": "boolean",
+      "default": false
+    },
+    "ctaText": {
+      "type": "string",
+      "required": true
+    },
+    "ctaUrl": {
+      "type": "string",
+      "required": true
+    }
+  }
+}

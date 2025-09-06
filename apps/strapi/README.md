@@ -1,11 +1,19 @@
-# 🔥 STRAPI Starter Template
+# 🔥 MalTar Designs: Enhanced Strapi CMS
 
-This is a [Stapi v5](https://strapi.io/) project.
+This is the enhanced [Strapi v5](https://strapi.io/) headless CMS with advanced content types and enterprise security.
+
+## 🎯 MalTar Designs Enhancements
+
+- **📝 Advanced Content Types** - Site, Page, NavigationItem, Post with dynamic zones
+- **🧱 8 Dynamic Zone Blocks** - Complete component library for page building
+- **🔒 Enterprise Security** - Role-based permissions, rate limiting, audit logging
+- **⚡ ISR Webhooks** - Automatic Next.js revalidation on content changes
+- **🌱 Seed Scripts** - Complete sample data with 4+ blog posts and homepage content
 
 ## 🥞 Tech stack
 
 - node 22
-- yarn 1.22
+- pnpm 9.x
 - Strapi 5
 - TypeScript
 - Docker
@@ -37,23 +45,23 @@ Preferred way of running Strapi locally is to run **Postgres in docker** contain
 
 ```bash
 (nvm use) # switch node version
-(yarn) # deps are probably already installed running `yarn` in root
+(pnpm) # deps are probably already installed running `pnpm` in root
 
 # start both services in 1 command [easiest way]
-yarn dev
+pnpm dev
 ```
 
 or
 
 ```bash
 (nvm use) # switch node version
-(yarn) # deps are probably already installed running `yarn` in root
+(pnpm) # deps are probably already installed running `pnpm` in root
 
 # start Postgres in docker container
 docker compose up -d db
 
 # start Strapi locally
-yarn develop
+pnpm develop
 ```
 
 Another way is to run **Strapi in docker** container too. Currently, an available Strapi [Dockerfile](Dockerfile) is prepared only for **production** run (see below).
@@ -71,7 +79,7 @@ There is `strapi-export.tar.gz` file in root directory with some init data. You 
 ```bash
 # in this directory
 
-yarn strapi import -f strapi-export.tar.gz
+pnpm strapi import -f strapi-export.tar.gz
 ```
 
 ### Sync configuration
@@ -80,7 +88,7 @@ Go to Strapi admin panel and navigate to Settings > Config Sync > Tools. Click o
 
 ## 🛠️ Production build (Docker)
 
-To build and run Strapi in Docker container use [Dockerfile](Dockerfile) prepared for **production** environment. It follows Strapi official documentation and recommended way of running app in Turborepo monorepo structure. Note, that Turborepo requires access to root `package.json`, `yarn.lock` and `turbo.json` files so you have to build it within whole monorepo context - run `docker build` from monorepo root. [More info here](https://turbo.build/repo/docs/handbook/deploying-with-docker).
+To build and run Strapi in Docker container use [Dockerfile](Dockerfile) prepared for **production** environment. It follows Strapi official documentation and recommended way of running app in Turborepo monorepo structure. Note, that Turborepo requires access to root `package.json`, `pnpm-lock.yaml` and `turbo.json` files so you have to build it within whole monorepo context - run `docker build` from monorepo root. [More info here](https://turbo.build/repo/docs/handbook/deploying-with-docker).
 
 ```bash
 # from monorepo root
@@ -207,7 +215,7 @@ await PublicStrapiClient.fetchOneByFullPath("api::page.page", fullPath, {
     seo: true, // ensures typing is valid on the resulting object
   },
   middlewarePopulate: ["content", "seo"], // ensures the middleware is triggered and the populate object is replaced
-})
+});
 ```
 
 - The middleware will map each key in `middlewarePopulate` to the corresponding population rules in `pagePopulateObject`, and apply them to the query.

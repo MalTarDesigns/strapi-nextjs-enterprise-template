@@ -1,7 +1,7 @@
-import { FindOne } from "../../types"
+import { FindOne } from "../../types";
 
-const pageTypes = ["api::page.page"]
-const pageActions = ["findMany"] // We're using findMany to find the pages, but this could be adjusted to findOne per your needs
+const pageTypes = ["api::page.page"];
+const pageActions = ["findMany"]; // We're using findMany to find the pages, but this could be adjusted to findOne per your needs
 
 /**
  * Registers a middleware to customize the population of related fields for page documents during Strapi queries.
@@ -20,10 +20,10 @@ export const registerPopulatePageMiddleware = ({ strapi }) => {
       pageActions.includes(context.action)
     ) {
       const requestParams: {
-        start?: number
-        limit?: number
-        middlewarePopulate?: Array<string>
-      } = context.params
+        start?: number;
+        limit?: number;
+        middlewarePopulate?: Array<string>;
+      } = context.params;
       if (
         // This is added by Strapi regardless of whether you use pagination or start & limit attributes
         // This condition will be met if the request contains {pagination: {page: 1, pageSize: 1}}
@@ -33,18 +33,18 @@ export const registerPopulatePageMiddleware = ({ strapi }) => {
       ) {
         requestParams.middlewarePopulate
           .filter((populateAttr) =>
-            Object.keys(pagePopulateObject).includes(populateAttr)
+            Object.keys(pagePopulateObject).includes(populateAttr),
           )
           .forEach((populateAttr) => {
             context.params.populate[populateAttr] =
-              pagePopulateObject[populateAttr]
-          })
+              pagePopulateObject[populateAttr];
+          });
       }
     }
 
-    return next()
-  })
-}
+    return next();
+  });
+};
 
 const pagePopulateObject: FindOne<"api::page.page">["populate"] = {
   content: {
@@ -90,4 +90,4 @@ const pagePopulateObject: FindOne<"api::page.page">["populate"] = {
       og: { populate: { image: true } },
     },
   },
-}
+};

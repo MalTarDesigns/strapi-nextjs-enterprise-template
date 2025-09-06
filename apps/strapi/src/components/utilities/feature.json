@@ -1,0 +1,22 @@
+{
+  "collectionName": "components_utilities_features",
+  "info": {
+    "displayName": "Feature",
+    "description": "Individual feature with icon, title, and description"
+  },
+  "options": {},
+  "attributes": {
+    "icon": {
+      "type": "string",
+      "required": false
+    },
+    "title": {
+      "type": "string",
+      "required": true
+    },
+    "description": {
+      "type": "text",
+      "required": true
+    }
+  }
+}

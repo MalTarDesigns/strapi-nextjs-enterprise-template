@@ -39,21 +39,21 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: 22
-          cache: yarn
+          cache: pnpm
 
       - name: Install dependencies
-        run: yarn
+        run: pnpm install
 
       - name: Prepare Environment Variables
         run: |
           cp apps/strapi/.env.example apps/strapi/.env
-          cp apps/ui/.env.local.example apps/ui/.env.local
+          cp apps/web/.env.local.example apps/web/.env.local
 
-      - name: yarn format:check
-        run: yarn format:check
+      - name: pnpm format:check
+        run: pnpm format:check
 
-      - name: yarn lint
-        run: yarn lint
+      - name: pnpm lint
+        run: pnpm lint
 
   build:
     name: Build all apps
@@ -77,18 +77,18 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: 22
-          cache: yarn
+          cache: pnpm
 
       - name: Install dependencies
-        run: yarn
+        run: pnpm install
       
       - name: Prepare Environment Variables
         run: |
           cp apps/strapi/.env.example apps/strapi/.env
-          cp apps/ui/.env.local.example apps/ui/.env.local
+          cp apps/web/.env.local.example apps/web/.env.local
 
       - name: Build UI
-        run: yarn build:ui
+        run: pnpm build:web
 
       - name: Build Strapi
-        run: yarn build:strapi
+        run: pnpm build:strapi

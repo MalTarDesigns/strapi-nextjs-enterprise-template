@@ -4,4 +4,14 @@ export default {
     maxLimit: 100,
     withCount: true,
   },
-}
+  responses: {
+    privateAttributes: [
+      "_v",
+      "id",
+      "created_by", 
+      "updated_by",
+      "publishedAt_by",
+      "unpublishedAt_by",
+    ],
+  },
+};

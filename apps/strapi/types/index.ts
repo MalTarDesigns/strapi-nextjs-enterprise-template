@@ -2,7 +2,7 @@ export type {
   ID,
   Result,
   PaginatedResult,
-} from "@strapi/types/dist/modules/documents"
+} from "@strapi/types/dist/modules/documents";
 
 export type {
   FindMany,
@@ -15,9 +15,9 @@ export type {
   Publish,
   Unpublish,
   DiscardDraft,
-} from "@strapi/types/dist/modules/documents/params/document-engine"
+} from "@strapi/types/dist/modules/documents/params/document-engine";
 
-export type { Utils, UID, Data } from "@strapi/strapi"
+export type { Utils, UID, Data } from "@strapi/strapi";
 
-export * from "./generated/components"
-export * from "./generated/contentTypes"
+export * from "./generated/components";
+export * from "./generated/contentTypes";

@@ -1,0 +1,1792 @@
+/**
+ * Comprehensive Database Seeding Script
+ * 
+ * This script populates the database with sample data for all content types:
+ * - Site configuration with theme tokens
+ * - Homepage with multiple block types
+ * - Navigation items
+ * - Blog posts with rich MDX content
+ * - Sample media assets
+ */
+
+import Strapi from '@strapi/strapi';
+import fs from 'fs';
+import path from 'path';
+import type { Core } from '@strapi/strapi';
+
+interface ComponentData {
+  __component: string;
+  [key: string]: any;
+}
+
+let strapi: Core.Strapi;
+
+const SAMPLE_THEME_TOKENS = {
+  colors: {
+    primary: "#3B82F6",
+    secondary: "#10B981", 
+    accent: "#F59E0B",
+    background: "#FFFFFF",
+    surface: "#F9FAFB",
+    text: "#111827",
+    textSecondary: "#6B7280",
+    border: "#E5E7EB",
+    error: "#EF4444",
+    success: "#10B981",
+    warning: "#F59E0B"
+  },
+  fonts: {
+    primary: "Inter, system-ui, sans-serif",
+    heading: "Inter, system-ui, sans-serif",
+    mono: "JetBrains Mono, Consolas, monospace"
+  },
+  spacing: {
+    xs: "0.5rem",
+    sm: "1rem", 
+    md: "1.5rem",
+    lg: "2rem",
+    xl: "3rem",
+    xxl: "4rem"
+  },
+  borderRadius: {
+    sm: "0.375rem",
+    md: "0.5rem",
+    lg: "0.75rem",
+    xl: "1rem",
+    full: "9999px"
+  },
+  shadows: {
+    sm: "0 1px 2px 0 rgb(0 0 0 / 0.05)",
+    md: "0 4px 6px -1px rgb(0 0 0 / 0.1)",
+    lg: "0 10px 15px -3px rgb(0 0 0 / 0.1)"
+  }
+};
+
+const SAMPLE_SITE_DOMAINS = [
+  "localhost:3000",
+  "example.com",
+  "www.example.com"
+];
+
+// Sample component data creators
+const createHeroBlock = (): ComponentData => ({
+  __component: 'sections.hero',
+  title: 'Build Modern Web Applications',
+  subTitle: 'Create stunning, scalable applications with our powerful Strapi + Next.js starter kit',
+  bgColor: '#3B82F6',
+  image: {
+    media: null, // Will be populated with actual media after upload
+    alt: 'Hero background showcasing modern web development',
+    width: 1920,
+    height: 1080,
+    fallbackSrc: 'https://images.unsplash.com/photo-1551434678-e076c223a692?w=1920&h=1080&fit=crop'
+  },
+  links: [
+    {
+      label: 'Get Started',
+      href: '/docs/getting-started',
+      newTab: false
+    },
+    {
+      label: 'View Demo',
+      href: '/demo',
+      newTab: false
+    }
+  ],
+  steps: [
+    { text: 'Install dependencies with pnpm' },
+    { text: 'Configure your environment' },
+    { text: 'Run development server' },
+    { text: 'Start building amazing features' }
+  ]
+});
+
+const createFeaturesBlock = (): ComponentData => ({
+  __component: 'sections.horizontal-images',
+  title: 'Powerful Features',
+  fixedImageHeight: 300,
+  fixedImageWidth: 400,
+  imageRadius: 'lg',
+  spacing: 8,
+  images: [
+    {
+      image: {
+        media: null,
+        alt: 'TypeScript support illustration',
+        width: 400,
+        height: 300,
+        fallbackSrc: 'https://images.unsplash.com/photo-1555066931-4365d14bab8c?w=400&h=300&fit=crop'
+      },
+      link: {
+        label: 'TypeScript Ready',
+        href: '/features/typescript',
+        newTab: false
+      }
+    },
+    {
+      image: {
+        media: null,
+        alt: 'Modern UI components showcase',
+        width: 400,
+        height: 300,
+        fallbackSrc: 'https://images.unsplash.com/photo-1581291518857-4e27b48ff24e?w=400&h=300&fit=crop'
+      },
+      link: {
+        label: 'UI Components',
+        href: '/features/components',
+        newTab: false
+      }
+    },
+    {
+      image: {
+        media: null,
+        alt: 'API development workflow',
+        width: 400,
+        height: 300,
+        fallbackSrc: 'https://images.unsplash.com/photo-1558494949-ef010cbdcc31?w=400&h=300&fit=crop'
+      },
+      link: {
+        label: 'RESTful APIs',
+        href: '/features/api',
+        newTab: false
+      }
+    }
+  ]
+});
+
+const createTestimonialBlock = (): ComponentData => ({
+  __component: 'sections.image-with-cta-button',
+  title: 'Trusted by Developers Worldwide',
+  subText: 'Join thousands of developers who have chosen our starter kit to build production-ready applications faster than ever before.',
+  image: {
+    media: null,
+    alt: 'Happy developers working together',
+    width: 600,
+    height: 400,
+    fallbackSrc: 'https://images.unsplash.com/photo-1522071820081-009f0129c71c?w=600&h=400&fit=crop'
+  },
+  link: {
+    label: 'Read Success Stories',
+    href: '/testimonials',
+    newTab: false
+  }
+});
+
+const createFAQBlock = (): ComponentData => ({
+  __component: 'sections.faq',
+  title: 'Frequently Asked Questions',
+  subTitle: 'Find answers to common questions about our starter kit',
+  accordions: [
+    {
+      question: 'What technologies are included?',
+      answer: 'Our starter kit includes Strapi CMS, Next.js, TypeScript, Tailwind CSS, and a complete development environment with Docker support.'
+    },
+    {
+      question: 'Is this suitable for production?',
+      answer: 'Absolutely! The starter kit is designed with production-ready configurations, security best practices, and performance optimizations built-in.'
+    },
+    {
+      question: 'Can I customize the design system?',
+      answer: 'Yes, the design system is fully customizable. You can modify theme tokens, components, and layouts to match your brand requirements.'
+    },
+    {
+      question: 'What kind of support is available?',
+      answer: 'We provide comprehensive documentation, video tutorials, and community support through GitHub issues and discussions.'
+    },
+    {
+      question: 'How do I deploy to production?',
+      answer: 'The kit includes deployment configurations for popular platforms like Vercel, Railway, and Docker-based solutions. Detailed deployment guides are included.'
+    }
+  ]
+});
+
+const createCTABlock = (): ComponentData => ({
+  __component: 'sections.heading-with-cta-button',
+  title: 'Ready to Get Started?',
+  subText: 'Download our starter kit and build your next project with confidence. Full documentation and examples included.',
+  cta: {
+    label: 'Start Your Project',
+    href: '/download',
+    newTab: false
+  }
+});
+
+const createRichTextBlock = (): ComponentData => ({
+  __component: 'utilities.ck-editor-content',
+  content: `
+    <h2>Why Choose Our Starter Kit?</h2>
+    <p>Building modern web applications shouldn't be complicated. Our comprehensive starter kit eliminates the complexity and gets you up and running in minutes, not hours.</p>
+    
+    <h3>Key Benefits</h3>
+    <ul>
+      <li><strong>Rapid Development:</strong> Pre-configured setup saves weeks of initial development time</li>
+      <li><strong>Best Practices:</strong> Industry-standard code organization and patterns</li>
+      <li><strong>Scalable Architecture:</strong> Designed to grow with your application needs</li>
+      <li><strong>Modern Stack:</strong> Latest versions of all technologies with regular updates</li>
+    </ul>
+    
+    <blockquote>
+      <p>"This starter kit reduced our initial development time by 70%. The code quality and architecture decisions are excellent." - Senior Developer at TechCorp</p>
+    </blockquote>
+    
+    <h3>What's Included</h3>
+    <p>Every aspect of modern web development is covered:</p>
+    <ul>
+      <li>🎨 Complete design system with customizable themes</li>
+      <li>🔐 Authentication and user management</li>
+      <li>📱 Responsive design for all devices</li>
+      <li>🚀 Performance optimizations and SEO</li>
+      <li>🧪 Testing setup with Jest and Playwright</li>
+      <li>📦 CI/CD pipelines and deployment configurations</li>
+    </ul>
+  `
+});
+
+const createCarouselBlock = (): ComponentData => ({
+  __component: 'sections.carousel',
+  radius: 'lg',
+  images: [
+    {
+      image: {
+        media: null,
+        alt: 'Modern dashboard interface',
+        width: 800,
+        height: 600,
+        fallbackSrc: 'https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=800&h=600&fit=crop'
+      },
+      link: {
+        label: 'Admin Dashboard',
+        href: '/features/dashboard',
+        newTab: false
+      }
+    },
+    {
+      image: {
+        media: null,
+        alt: 'Mobile-first responsive design',
+        width: 800,
+        height: 600,
+        fallbackSrc: 'https://images.unsplash.com/photo-1512941937669-90a1b58e7e9c?w=800&h=600&fit=crop'
+      },
+      link: {
+        label: 'Mobile Experience',
+        href: '/features/mobile',
+        newTab: false
+      }
+    },
+    {
+      image: {
+        media: null,
+        alt: 'Code editor with TypeScript',
+        width: 800,
+        height: 600,
+        fallbackSrc: 'https://images.unsplash.com/photo-1461749280684-dccba630e2f6?w=800&h=600&fit=crop'
+      },
+      link: {
+        label: 'Developer Experience',
+        href: '/features/dx',
+        newTab: false
+      }
+    }
+  ]
+});
+
+const createAnimatedLogoRowBlock = (): ComponentData => ({
+  __component: 'sections.animated-logo-row',
+  text: 'Trusted by leading companies worldwide',
+  logos: [
+    {
+      media: null,
+      alt: 'TechCorp logo',
+      width: 120,
+      height: 60,
+      fallbackSrc: 'https://via.placeholder.com/120x60/3B82F6/FFFFFF?text=TechCorp'
+    },
+    {
+      media: null,
+      alt: 'InnovateIO logo',
+      width: 120,
+      height: 60,
+      fallbackSrc: 'https://via.placeholder.com/120x60/10B981/FFFFFF?text=InnovateIO'
+    },
+    {
+      media: null,
+      alt: 'StartupXYZ logo',
+      width: 120,
+      height: 60,
+      fallbackSrc: 'https://via.placeholder.com/120x60/F59E0B/FFFFFF?text=StartupXYZ'
+    },
+    {
+      media: null,
+      alt: 'DevStudio logo',
+      width: 120,
+      height: 60,
+      fallbackSrc: 'https://via.placeholder.com/120x60/EF4444/FFFFFF?text=DevStudio'
+    },
+    {
+      media: null,
+      alt: 'CloudTech logo',
+      width: 120,
+      height: 60,
+      fallbackSrc: 'https://via.placeholder.com/120x60/8B5CF6/FFFFFF?text=CloudTech'
+    }
+  ]
+});
+
+const createContactFormBlock = (): ComponentData => ({
+  __component: 'forms.contact-form',
+  title: 'Get in Touch',
+  description: 'Have questions about our starter kit? We\'d love to hear from you. Send us a message and we\'ll respond as soon as possible.',
+  gdpr: {
+    label: 'Privacy Policy',
+    href: '/privacy',
+    newTab: false
+  }
+});
+
+const createNewsletterBlock = (): ComponentData => ({
+  __component: 'forms.newsletter-form',
+  title: 'Stay Updated',
+  description: 'Subscribe to our newsletter for the latest updates, tutorials, and best practices for modern web development.',
+  gdpr: {
+    label: 'Privacy Policy',
+    href: '/privacy',
+    newTab: false
+  }
+});
+
+// Sample blog posts with rich content
+const SAMPLE_POSTS = [
+  {
+    title: 'Getting Started with Modern Web Development',
+    slug: 'getting-started-modern-web-development',
+    excerpt: 'Learn the fundamentals of building modern web applications with our comprehensive starter kit. This guide covers everything from initial setup to deploying your first application.',
+    body: `
+      <h2>Introduction to Modern Web Development</h2>
+      <p>The landscape of web development has evolved dramatically over the past few years. With the introduction of new frameworks, tools, and methodologies, building web applications has become both more powerful and more complex.</p>
+      
+      <p>This guide will walk you through the essential concepts and practices you need to know to build modern, scalable web applications.</p>
+      
+      <h3>What Makes Web Development "Modern"?</h3>
+      <p>Modern web development encompasses several key principles:</p>
+      <ul>
+        <li><strong>Component-Based Architecture:</strong> Building UIs with reusable, composable components</li>
+        <li><strong>TypeScript:</strong> Adding static typing for better developer experience and fewer bugs</li>
+        <li><strong>Performance First:</strong> Optimizing for Core Web Vitals and user experience</li>
+        <li><strong>Developer Experience:</strong> Tools and workflows that make development faster and more enjoyable</li>
+        <li><strong>Accessibility:</strong> Building inclusive applications for all users</li>
+      </ul>
+      
+      <h3>The Technology Stack</h3>
+      <p>Our starter kit combines the best tools in the ecosystem:</p>
+      
+      <h4>Frontend: Next.js</h4>
+      <p>Next.js provides a complete solution for React applications with server-side rendering, static site generation, and automatic code splitting. It eliminates much of the configuration overhead while providing excellent performance out of the box.</p>
+      
+      <h4>Backend: Strapi CMS</h4>
+      <p>Strapi offers a flexible, developer-friendly headless CMS that can adapt to any content structure. Its REST and GraphQL APIs make it easy to integrate with any frontend framework.</p>
+      
+      <h4>Database: PostgreSQL</h4>
+      <p>PostgreSQL provides the reliability and features needed for production applications, with excellent JSON support for flexible content modeling.</p>
+      
+      <h3>Getting Started</h3>
+      <p>Ready to dive in? Here's how to get your development environment set up:</p>
+      
+      <pre><code>
+# Clone the repository
+git clone https://github.com/your-org/strapi-next-starter.git
+cd strapi-next-starter
+
+# Install dependencies
+pnpm install
+
+# Set up environment variables
+cp apps/strapi/.env.example apps/strapi/.env
+cp apps/web/.env.example apps/web/.env.local
+
+# Start the development servers
+pnpm dev
+      </code></pre>
+      
+      <p>That's it! Your development environment is now ready. Navigate to <code>http://localhost:3000</code> to see your application, and <code>http://localhost:1337/admin</code> to access the Strapi admin panel.</p>
+      
+      <h3>Next Steps</h3>
+      <p>Now that you have the basics set up, explore these topics to deepen your understanding:</p>
+      <ul>
+        <li>Content modeling in Strapi</li>
+        <li>Building dynamic pages in Next.js</li>
+        <li>Implementing authentication</li>
+        <li>Optimizing for performance</li>
+        <li>Deploying to production</li>
+      </ul>
+      
+      <p>Happy coding! 🚀</p>
+    `
+  },
+  {
+    title: 'Building Scalable APIs with Strapi',
+    slug: 'building-scalable-apis-strapi',
+    excerpt: 'Discover best practices for creating robust, scalable APIs using Strapi. Learn about content modeling, custom controllers, middleware, and performance optimization techniques.',
+    body: `
+      <h2>Introduction to Strapi API Development</h2>
+      <p>Building APIs that can scale with your application's growth is crucial for long-term success. Strapi provides a powerful foundation for creating flexible, maintainable APIs that can evolve with your needs.</p>
+      
+      <h3>Content Modeling Best Practices</h3>
+      <p>The foundation of any great API is a well-designed data model. Here are key principles to follow:</p>
+      
+      <h4>1. Normalize Your Data Structure</h4>
+      <p>Avoid deeply nested objects and instead use relations to connect content types. This makes your API more flexible and easier to query.</p>
+      
+      <pre><code>
+// Instead of nested objects
+{
+  "author": {
+    "name": "John Doe",
+    "bio": "...",
+    "avatar": "..."
+  }
+}
+
+// Use relations
+{
+  "author": {
+    "id": 1,
+    "name": "John Doe",
+    // ... other author fields fetched separately
+  }
+}
+      </code></pre>
+      
+      <h4>2. Use Components for Reusable Content</h4>
+      <p>Components allow you to create reusable content structures that can be shared across different content types.</p>
+      
+      <h4>3. Plan for Internationalization</h4>
+      <p>Even if you don't need multiple languages initially, enabling i18n from the start saves time later.</p>
+      
+      <h3>Custom Controllers and Services</h3>
+      <p>While Strapi's auto-generated controllers work well for basic CRUD operations, you'll often need custom logic:</p>
+      
+      <pre><code>
+// Custom controller example
+export default factories.createCoreController('api::post.post', ({ strapi }) => ({
+  async findPublished(ctx) {
+    const { page = 1, pageSize = 10 } = ctx.query;
+    
+    const posts = await strapi.entityService.findMany('api::post.post', {
+      filters: {
+        publishedAt: { $notNull: true },
+        $and: [
+          { publishedAt: { $lte: new Date() } }
+        ]
+      },
+      sort: { publishedAt: 'desc' },
+      populate: ['author', 'cover'],
+      pagination: {
+        page: parseInt(page),
+        pageSize: parseInt(pageSize)
+      }
+    });
+    
+    return posts;
+  }
+}));
+      </code></pre>
+      
+      <h3>Performance Optimization</h3>
+      <p>As your application grows, performance becomes increasingly important:</p>
+      
+      <h4>1. Optimize Database Queries</h4>
+      <ul>
+        <li>Use specific populate parameters instead of deep population</li>
+        <li>Implement proper indexing in your database</li>
+        <li>Use pagination for large result sets</li>
+      </ul>
+      
+      <h4>2. Implement Caching</h4>
+      <p>Strapi supports various caching strategies:</p>
+      <ul>
+        <li>Redis for session and temporary data</li>
+        <li>CDN for media files</li>
+        <li>Application-level caching for expensive operations</li>
+      </ul>
+      
+      <h4>3. Use Background Jobs</h4>
+      <p>For time-consuming operations, implement background job processing to keep your API responsive.</p>
+      
+      <h3>Security Best Practices</h3>
+      <p>Security should be built into your API from day one:</p>
+      
+      <ul>
+        <li><strong>Authentication:</strong> Use JWT tokens with appropriate expiration times</li>
+        <li><strong>Authorization:</strong> Implement role-based access control</li>
+        <li><strong>Rate Limiting:</strong> Protect against abuse with request rate limits</li>
+        <li><strong>Input Validation:</strong> Validate and sanitize all user inputs</li>
+        <li><strong>CORS:</strong> Configure Cross-Origin Resource Sharing appropriately</li>
+      </ul>
+      
+      <h3>Testing Your APIs</h3>
+      <p>Comprehensive testing ensures your APIs work correctly and continue to work as you make changes:</p>
+      
+      <pre><code>
+// Example test for custom controller
+describe('Post Controller', () => {
+  test('should return published posts only', async () => {
+    const response = await request(strapi.server)
+      .get('/api/posts/published')
+      .expect(200);
+      
+    expect(response.body.data).toBeDefined();
+    expect(response.body.data.length).toBeGreaterThan(0);
+    
+    // Verify all returned posts are published
+    response.body.data.forEach(post => {
+      expect(post.attributes.publishedAt).toBeTruthy();
+    });
+  });
+});
+      </code></pre>
+      
+      <h3>Documentation and Versioning</h3>
+      <p>Good APIs are well-documented and versioned:</p>
+      <ul>
+        <li>Use OpenAPI/Swagger for automated documentation</li>
+        <li>Implement semantic versioning for breaking changes</li>
+        <li>Provide clear migration guides for version updates</li>
+      </ul>
+      
+      <h3>Monitoring and Analytics</h3>
+      <p>Production APIs need monitoring:</p>
+      <ul>
+        <li>Set up error tracking with services like Sentry</li>
+        <li>Monitor performance metrics</li>
+        <li>Track API usage patterns</li>
+        <li>Set up alerts for critical issues</li>
+      </ul>
+      
+      <h3>Conclusion</h3>
+      <p>Building scalable APIs with Strapi requires thoughtful planning and adherence to best practices. By following the guidelines in this article, you'll create APIs that can grow with your application and provide excellent developer and user experiences.</p>
+      
+      <p>Remember: scalability isn't just about handling more requests—it's about creating maintainable, flexible systems that can evolve with your business needs.</p>
+    `
+  },
+  {
+    title: 'Next.js Performance Optimization Strategies',
+    slug: 'nextjs-performance-optimization',
+    excerpt: 'Master the art of building lightning-fast Next.js applications. Learn about image optimization, code splitting, caching strategies, and Core Web Vitals improvements.',
+    body: `
+      <h2>Introduction to Next.js Performance</h2>
+      <p>Performance is not just a nice-to-have—it's essential for user experience, SEO rankings, and business success. Next.js provides many built-in optimizations, but knowing how to leverage them effectively is key to building truly fast applications.</p>
+      
+      <h3>Core Web Vitals: The Performance Metrics That Matter</h3>
+      <p>Google's Core Web Vitals are the essential metrics for measuring user experience:</p>
+      
+      <ul>
+        <li><strong>Largest Contentful Paint (LCP):</strong> Should be under 2.5 seconds</li>
+        <li><strong>First Input Delay (FID):</strong> Should be under 100 milliseconds</li>
+        <li><strong>Cumulative Layout Shift (CLS):</strong> Should be under 0.1</li>
+      </ul>
+      
+      <p>Let's explore how to optimize each of these metrics.</p>
+      
+      <h3>Image Optimization</h3>
+      <p>Images often account for the majority of bytes downloaded on web pages. Next.js provides excellent built-in image optimization:</p>
+      
+      <h4>Using next/image</h4>
+      <pre><code>
+import Image from 'next/image';
+
+// Optimized image with automatic format selection and responsive sizing
+export function HeroImage() {
+  return (
+    <Image
+      src="/hero-bg.jpg"
+      alt="Hero background"
+      width={1920}
+      height={1080}
+      priority // Load immediately for above-the-fold images
+      placeholder="blur"
+      blurDataURL="data:image/jpeg;base64,..." // Low-quality placeholder
+      sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+    />
+  );
+}
+      </code></pre>
+      
+      <h4>Advanced Image Techniques</h4>
+      <ul>
+        <li><strong>Progressive Loading:</strong> Use blur placeholders for perceived performance</li>
+        <li><strong>Responsive Images:</strong> Serve appropriate sizes for different devices</li>
+        <li><strong>Format Optimization:</strong> Automatically serve WebP/AVIF when supported</li>
+        <li><strong>Lazy Loading:</strong> Only load images as they enter the viewport</li>
+      </ul>
+      
+      <h3>Code Splitting and Bundle Optimization</h3>
+      <p>Next.js automatically splits your code, but you can optimize further:</p>
+      
+      <h4>Dynamic Imports</h4>
+      <pre><code>
+import dynamic from 'next/dynamic';
+import { Suspense } from 'react';
+
+// Load heavy components only when needed
+const HeavyChart = dynamic(() => import('../components/HeavyChart'), {
+  loading: () => <div>Loading chart...</div>,
+  ssr: false // Skip server-side rendering for client-only components
+});
+
+// Dynamic imports with named exports
+const { SpecialModal } = dynamic(() => 
+  import('../components/Modals').then(mod => ({ default: mod.SpecialModal }))
+);
+      </code></pre>
+      
+      <h4>Bundle Analysis</h4>
+      <pre><code>
+# Analyze your bundle size
+npm install -g @next/bundle-analyzer
+ANALYZE=true npm run build
+      </code></pre>
+      
+      <h3>Caching Strategies</h3>
+      <p>Effective caching dramatically improves performance for returning users:</p>
+      
+      <h4>Static Generation with Revalidation</h4>
+      <pre><code>
+// pages/blog/[slug].js
+export async function getStaticProps({ params }) {
+  const post = await getPost(params.slug);
+  
+  return {
+    props: { post },
+    revalidate: 3600 // Revalidate every hour
+  };
+}
+
+export async function getStaticPaths() {
+  const posts = await getPosts();
+  
+  return {
+    paths: posts.map(post => ({ params: { slug: post.slug } })),
+    fallback: 'blocking' // Generate new pages on-demand
+  };
+}
+      </code></pre>
+      
+      <h4>API Route Caching</h4>
+      <pre><code>
+// pages/api/posts.js
+export default async function handler(req, res) {
+  // Set cache headers
+  res.setHeader(
+    'Cache-Control',
+    'public, s-maxage=10, stale-while-revalidate=59'
+  );
+  
+  const posts = await getPosts();
+  res.json(posts);
+}
+      </code></pre>
+      
+      <h3>Font Optimization</h3>
+      <p>Fonts can cause layout shifts and slow rendering. Next.js Font optimization helps:</p>
+      
+      <pre><code>
+import { Inter, Roboto_Mono } from 'next/font/google';
+
+const inter = Inter({
+  subsets: ['latin'],
+  display: 'swap', // Swap to custom font when loaded
+  variable: '--font-inter'
+});
+
+const robotoMono = Roboto_Mono({
+  subsets: ['latin'],
+  display: 'swap',
+  variable: '--font-roboto-mono'
+});
+
+export default function MyApp({ Component, pageProps }) {
+  return (
+    <main className={`${inter.variable} ${robotoMono.variable} font-sans`}>
+      <Component {...pageProps} />
+    </main>
+  );
+}
+      </code></pre>
+      
+      <h3>Runtime Performance</h3>
+      <p>Optimize React components for better runtime performance:</p>
+      
+      <h4>Memoization</h4>
+      <pre><code>
+import { memo, useMemo, useCallback } from 'react';
+
+const ExpensiveComponent = memo(function ExpensiveComponent({ data, onUpdate }) {
+  // Memoize expensive calculations
+  const processedData = useMemo(() => {
+    return data.map(item => expensiveProcessing(item));
+  }, [data]);
+  
+  // Memoize callback functions
+  const handleUpdate = useCallback((id, newValue) => {
+    onUpdate(id, newValue);
+  }, [onUpdate]);
+  
+  return (
+    <div>
+      {processedData.map(item => (
+        <Item key={item.id} data={item} onUpdate={handleUpdate} />
+      ))}
+    </div>
+  );
+});
+      </code></pre>
+      
+      <h4>Virtualization for Large Lists</h4>
+      <pre><code>
+import { FixedSizeList as List } from 'react-window';
+
+function VirtualizedList({ items }) {
+  const Row = ({ index, style }) => (
+    <div style={style}>
+      {items[index].name}
+    </div>
+  );
+  
+  return (
+    <List
+      height={600}
+      itemCount={items.length}
+      itemSize={50}
+      width="100%"
+    >
+      {Row}
+    </List>
+  );
+}
+      </code></pre>
+      
+      <h3>Third-Party Script Optimization</h3>
+      <p>Third-party scripts can significantly impact performance:</p>
+      
+      <pre><code>
+import Script from 'next/script';
+
+export default function MyApp({ Component, pageProps }) {
+  return (
+    <>
+      {/* Load analytics after page interactive */}
+      <Script
+        src="https://www.googletagmanager.com/gtag/js?id=GA_MEASUREMENT_ID"
+        strategy="afterInteractive"
+      />
+      
+      {/* Load non-critical scripts with low priority */}
+      <Script
+        src="https://widget.example.com/widget.js"
+        strategy="lazyOnload"
+      />
+      
+      <Component {...pageProps} />
+    </>
+  );
+}
+      </code></pre>
+      
+      <h3>Monitoring and Measuring Performance</h3>
+      <p>You can't optimize what you don't measure:</p>
+      
+      <h4>Real User Monitoring</h4>
+      <pre><code>
+// pages/_app.js
+export function reportWebVitals(metric) {
+  // Send to analytics service
+  gtag('event', metric.name, {
+    value: Math.round(metric.name === 'CLS' ? metric.value * 1000 : metric.value),
+    event_label: metric.id,
+    non_interaction: true,
+  });
+}
+      </code></pre>
+      
+      <h4>Performance Monitoring Tools</h4>
+      <ul>
+        <li><strong>Lighthouse:</strong> Built into Chrome DevTools</li>
+        <li><strong>Web Vitals Extension:</strong> Real-time Core Web Vitals monitoring</li>
+        <li><strong>Next.js Analytics:</strong> Built-in performance tracking</li>
+        <li><strong>Real User Monitoring:</strong> Tools like SpeedCurve or DataDog</li>
+      </ul>
+      
+      <h3>Performance Checklist</h3>
+      <p>Use this checklist to ensure optimal performance:</p>
+      
+      <ul>
+        <li>✅ Images optimized with next/image</li>
+        <li>✅ Fonts optimized with next/font</li>
+        <li>✅ Code splitting implemented for heavy components</li>
+        <li>✅ Static generation used where appropriate</li>
+        <li>✅ Caching headers configured</li>
+        <li>✅ Third-party scripts loaded efficiently</li>
+        <li>✅ Core Web Vitals monitored</li>
+        <li>✅ Bundle size regularly analyzed</li>
+        <li>✅ Performance regression tests in CI/CD</li>
+      </ul>
+      
+      <h3>Conclusion</h3>
+      <p>Performance optimization is an ongoing process, not a one-time task. By implementing these strategies and continuously monitoring your application's performance, you'll create fast, delightful user experiences that drive business results.</p>
+      
+      <p>Remember: every millisecond counts. Users notice and appreciate fast applications, and search engines reward them with better rankings.</p>
+    `
+  },
+  {
+    title: 'Advanced TypeScript Patterns for React Applications',
+    slug: 'advanced-typescript-react-patterns',
+    excerpt: 'Explore advanced TypeScript patterns that will make your React applications more robust, maintainable, and developer-friendly. Learn about utility types, generics, and type-safe APIs.',
+    body: `
+      <h2>Elevating Your TypeScript Game</h2>
+      <p>TypeScript has become essential for building maintainable React applications at scale. While basic typing covers most use cases, advanced patterns can dramatically improve code quality, developer experience, and runtime safety.</p>
+      
+      <h3>Generic Components and Hooks</h3>
+      <p>Generic types make components and hooks reusable across different data types:</p>
+      
+      <h4>Generic Data Table</h4>
+      <pre><code>
+interface DataTableProps<T> {
+  data: T[];
+  columns: Array<{
+    key: keyof T;
+    title: string;
+    render?: (value: T[keyof T], item: T) => React.ReactNode;
+  }>;
+  onRowClick?: (item: T) => void;
+}
+
+function DataTable<T extends Record<string, any>>({
+  data,
+  columns,
+  onRowClick
+}: DataTableProps<T>) {
+  return (
+    <table>
+      <thead>
+        <tr>
+          {columns.map(column => (
+            <th key={String(column.key)}>{column.title}</th>
+          ))}
+        </tr>
+      </thead>
+      <tbody>
+        {data.map((item, index) => (
+          <tr key={index} onClick={() => onRowClick?.(item)}>
+            {columns.map(column => (
+              <td key={String(column.key)}>
+                {column.render 
+                  ? column.render(item[column.key], item)
+                  : String(item[column.key])
+                }
+              </td>
+            ))}
+          </tr>
+        ))}
+      </tbody>
+    </table>
+  );
+}
+
+// Usage with full type safety
+interface User {
+  id: string;
+  name: string;
+  email: string;
+  role: 'admin' | 'user';
+}
+
+function UserList({ users }: { users: User[] }) {
+  return (
+    <DataTable
+      data={users}
+      columns={[
+        { key: 'name', title: 'Name' },
+        { key: 'email', title: 'Email' },
+        { 
+          key: 'role', 
+          title: 'Role',
+          render: (role) => <span className={`badge-${role}`}>{role}</span>
+        }
+      ]}
+      onRowClick={(user) => console.log(user.id)} // Fully typed!
+    />
+  );
+}
+      </code></pre>
+      
+      <h4>Generic Hooks</h4>
+      <pre><code>
+// Generic API hook
+function useAPI<T>(url: string, options?: RequestInit) {
+  const [data, setData] = useState<T | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  
+  useEffect(() => {
+    let cancelled = false;
+    
+    fetch(url, options)
+      .then(res => res.json())
+      .then((data: T) => {
+        if (!cancelled) {
+          setData(data);
+          setLoading(false);
+        }
+      })
+      .catch(err => {
+        if (!cancelled) {
+          setError(err.message);
+          setLoading(false);
+        }
+      });
+      
+    return () => { cancelled = true; };
+  }, [url]);
+  
+  return { data, loading, error };
+}
+
+// Usage with automatic type inference
+interface Post {
+  id: string;
+  title: string;
+  content: string;
+}
+
+function BlogPost({ id }: { id: string }) {
+  const { data: post, loading, error } = useAPI<Post>(`/api/posts/${id}`);
+  
+  if (loading) return <div>Loading...</div>;
+  if (error) return <div>Error: {error}</div>;
+  if (!post) return <div>Post not found</div>;
+  
+  return (
+    <article>
+      <h1>{post.title}</h1> {/* TypeScript knows this exists! */}
+      <div dangerouslySetInnerHTML={{ __html: post.content }} />
+    </article>
+  );
+}
+      </code></pre>
+      
+      <h3>Advanced Utility Types</h3>
+      <p>TypeScript's utility types can solve complex typing challenges:</p>
+      
+      <h4>Form Handling with Type Safety</h4>
+      <pre><code>
+// Extract form data type from a schema
+type FormSchema<T> = {
+  [K in keyof T]: {
+    value: T[K];
+    error?: string;
+    required?: boolean;
+    validate?: (value: T[K]) => string | undefined;
+  };
+};
+
+// Create a form type from your data model
+interface UserFormData {
+  name: string;
+  email: string;
+  age: number;
+  preferences: {
+    newsletter: boolean;
+    notifications: boolean;
+  };
+}
+
+function useTypedForm<T extends Record<string, any>>(
+  initialValues: T,
+  validationSchema?: Partial<Record<keyof T, (value: T[keyof T]) => string | undefined>>
+) {
+  const [values, setValues] = useState<T>(initialValues);
+  const [errors, setErrors] = useState<Partial<Record<keyof T, string>>>({});
+  
+  const setValue = <K extends keyof T>(key: K, value: T[K]) => {
+    setValues(prev => ({ ...prev, [key]: value }));
+    
+    // Clear error when value changes
+    if (errors[key]) {
+      setErrors(prev => ({ ...prev, [key]: undefined }));
+    }
+  };
+  
+  const validate = (): boolean => {
+    if (!validationSchema) return true;
+    
+    const newErrors: Partial<Record<keyof T, string>> = {};
+    let isValid = true;
+    
+    Object.keys(validationSchema).forEach(key => {
+      const validator = validationSchema[key as keyof T];
+      if (validator) {
+        const error = validator(values[key as keyof T]);
+        if (error) {
+          newErrors[key as keyof T] = error;
+          isValid = false;
+        }
+      }
+    });
+    
+    setErrors(newErrors);
+    return isValid;
+  };
+  
+  return { values, errors, setValue, validate };
+}
+
+// Usage
+function UserForm() {
+  const { values, errors, setValue, validate } = useTypedForm<UserFormData>({
+    name: '',
+    email: '',
+    age: 0,
+    preferences: {
+      newsletter: false,
+      notifications: true
+    }
+  }, {
+    name: (value) => value.length < 2 ? 'Name must be at least 2 characters' : undefined,
+    email: (value) => /^[^@]+@[^@]+\\.[^@]+$/.test(value) ? undefined : 'Invalid email format',
+    age: (value) => value < 18 ? 'Must be at least 18 years old' : undefined
+  });
+  
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (validate()) {
+      console.log('Form is valid:', values);
+    }
+  };
+  
+  return (
+    <form onSubmit={handleSubmit}>
+      <input
+        type="text"
+        value={values.name}
+        onChange={(e) => setValue('name', e.target.value)}
+        placeholder="Name"
+      />
+      {errors.name && <span className="error">{errors.name}</span>}
+      
+      {/* TypeScript ensures type safety throughout */}
+    </form>
+  );
+}
+      </code></pre>
+      
+      <h3>Discriminated Unions for State Management</h3>
+      <p>Use discriminated unions to model complex state transitions safely:</p>
+      
+      <pre><code>
+// Define all possible states with discriminated unions
+type AsyncState<T, E = string> =
+  | { status: 'idle' }
+  | { status: 'loading' }
+  | { status: 'success'; data: T }
+  | { status: 'error'; error: E };
+
+// State reducer with exhaustive type checking
+function asyncReducer<T, E = string>(
+  state: AsyncState<T, E>,
+  action: 
+    | { type: 'FETCH_START' }
+    | { type: 'FETCH_SUCCESS'; payload: T }
+    | { type: 'FETCH_ERROR'; error: E }
+    | { type: 'RESET' }
+): AsyncState<T, E> {
+  switch (action.type) {
+    case 'FETCH_START':
+      return { status: 'loading' };
+    case 'FETCH_SUCCESS':
+      return { status: 'success', data: action.payload };
+    case 'FETCH_ERROR':
+      return { status: 'error', error: action.error };
+    case 'RESET':
+      return { status: 'idle' };
+    default:
+      // TypeScript ensures we handle all cases
+      const _exhaustiveCheck: never = action;
+      return _exhaustiveCheck;
+  }
+}
+
+// Custom hook using the reducer
+function useAsyncData<T>(fetcher: () => Promise<T>) {
+  const [state, dispatch] = useReducer(asyncReducer<T>, { status: 'idle' });
+  
+  const execute = useCallback(async () => {
+    dispatch({ type: 'FETCH_START' });
+    try {
+      const data = await fetcher();
+      dispatch({ type: 'FETCH_SUCCESS', payload: data });
+    } catch (error) {
+      dispatch({ type: 'FETCH_ERROR', error: error.message });
+    }
+  }, [fetcher]);
+  
+  const reset = useCallback(() => {
+    dispatch({ type: 'RESET' });
+  }, []);
+  
+  return { state, execute, reset };
+}
+
+// Component using the hook with full type safety
+function PostList() {
+  const { state, execute, reset } = useAsyncData(async () => {
+    const response = await fetch('/api/posts');
+    return response.json() as Promise<Post[]>;
+  });
+  
+  // TypeScript knows exactly what properties are available in each state
+  switch (state.status) {
+    case 'idle':
+      return <button onClick={execute}>Load Posts</button>;
+    case 'loading':
+      return <div>Loading posts...</div>;
+    case 'success':
+      return (
+        <div>
+          {state.data.map(post => ( // TypeScript knows data exists and is Post[]
+            <article key={post.id}>
+              <h2>{post.title}</h2>
+            </article>
+          ))}
+          <button onClick={reset}>Reset</button>
+        </div>
+      );
+    case 'error':
+      return (
+        <div>
+          Error: {state.error} {/* TypeScript knows error exists and is string */}
+          <button onClick={execute}>Retry</button>
+        </div>
+      );
+  }
+}
+      </code></pre>
+      
+      <h3>Type-Safe API Integration</h3>
+      <p>Create fully typed API clients that prevent runtime errors:</p>
+      
+      <pre><code>
+// Define API endpoints and their types
+interface APIEndpoints {
+  'GET /api/users': {
+    params: { page?: number; limit?: number };
+    response: { users: User[]; total: number };
+  };
+  'POST /api/users': {
+    body: Omit<User, 'id'>;
+    response: User;
+  };
+  'GET /api/posts': {
+    params: { authorId?: string };
+    response: Post[];
+  };
+  'PUT /api/posts/:id': {
+    params: { id: string };
+    body: Partial<Post>;
+    response: Post;
+  };
+}
+
+// Extract method and path from endpoint string
+type Method = 'GET' | 'POST' | 'PUT' | 'DELETE';
+type ExtractPath<T extends string> = T extends `${Method} ${infer P}` ? P : never;
+type ExtractMethod<T extends string> = T extends `${infer M} ${string}` ? M : never;
+
+// Type-safe API client
+class TypedAPIClient {
+  private baseUrl: string;
+  
+  constructor(baseUrl: string) {
+    this.baseUrl = baseUrl;
+  }
+  
+  async request<K extends keyof APIEndpoints>(
+    endpoint: K,
+    options?: {
+      params?: APIEndpoints[K] extends { params: infer P } ? P : never;
+      body?: APIEndpoints[K] extends { body: infer B } ? B : never;
+    }
+  ): Promise<APIEndpoints[K] extends { response: infer R } ? R : void> {
+    const method = endpoint.split(' ')[0] as ExtractMethod<K>;
+    let path = endpoint.split(' ')[1] as ExtractPath<K>;
+    
+    // Replace path parameters
+    if (options?.params && method !== 'GET') {
+      Object.entries(options.params).forEach(([key, value]) => {
+        path = path.replace(`:${key}`, String(value)) as ExtractPath<K>;
+      });
+    }
+    
+    // Add query parameters for GET requests
+    if (method === 'GET' && options?.params) {
+      const searchParams = new URLSearchParams();
+      Object.entries(options.params).forEach(([key, value]) => {
+        if (value !== undefined) {
+          searchParams.append(key, String(value));
+        }
+      });
+      path = `${path}?${searchParams.toString()}` as ExtractPath<K>;
+    }
+    
+    const response = await fetch(`${this.baseUrl}${path}`, {
+      method,
+      headers: { 'Content-Type': 'application/json' },
+      body: options?.body ? JSON.stringify(options.body) : undefined,
+    });
+    
+    if (!response.ok) {
+      throw new Error(`API Error: ${response.status} ${response.statusText}`);
+    }
+    
+    return response.json();
+  }
+}
+
+// Usage with full type safety
+const api = new TypedAPIClient('http://localhost:3000');
+
+async function loadUsers() {
+  // TypeScript knows exactly what parameters are available and required
+  const result = await api.request('GET /api/users', {
+    params: { page: 1, limit: 10 }
+  });
+  
+  // TypeScript knows the response type
+  console.log(result.users); // User[]
+  console.log(result.total); // number
+}
+
+async function createUser(userData: Omit<User, 'id'>) {
+  // TypeScript ensures the body matches the expected type
+  const newUser = await api.request('POST /api/users', {
+    body: userData
+  });
+  
+  return newUser; // TypeScript knows this is User
+}
+      </code></pre>
+      
+      <h3>Testing with TypeScript</h3>
+      <p>TypeScript can make your tests more robust and maintainable:</p>
+      
+      <pre><code>
+// Type-safe test factories
+function createMockUser(overrides: Partial<User> = {}): User {
+  return {
+    id: '1',
+    name: 'John Doe',
+    email: 'john@example.com',
+    role: 'user',
+    ...overrides
+  };
+}
+
+function createMockPost(overrides: Partial<Post> = {}): Post {
+  return {
+    id: '1',
+    title: 'Test Post',
+    content: 'This is a test post',
+    authorId: '1',
+    publishedAt: new Date().toISOString(),
+    ...overrides
+  };
+}
+
+// Type-safe component testing
+import { render, screen } from '@testing-library/react';
+import { UserProfile } from '../UserProfile';
+
+describe('UserProfile', () => {
+  it('displays user information correctly', () => {
+    const mockUser = createMockUser({
+      name: 'Jane Doe',
+      email: 'jane@example.com',
+      role: 'admin'
+    });
+    
+    render(<UserProfile user={mockUser} />);
+    
+    // TypeScript ensures we're testing with the correct data structure
+    expect(screen.getByText(mockUser.name)).toBeInTheDocument();
+    expect(screen.getByText(mockUser.email)).toBeInTheDocument();
+  });
+});
+      </code></pre>
+      
+      <h3>Performance Considerations</h3>
+      <p>Advanced TypeScript features have minimal runtime impact but can affect compile time:</p>
+      
+      <ul>
+        <li><strong>Use incremental compilation:</strong> Enable <code>incremental: true</code> in tsconfig.json</li>
+        <li><strong>Optimize imports:</strong> Use project references for large codebases</li>
+        <li><strong>Monitor bundle size:</strong> Complex types don't add runtime overhead</li>
+        <li><strong>Use type-only imports:</strong> <code>import type { User } from './types'</code></li>
+      </ul>
+      
+      <h3>Best Practices</h3>
+      <ul>
+        <li><strong>Start simple:</strong> Begin with basic types and evolve to advanced patterns</li>
+        <li><strong>Prefer composition:</strong> Combine simple types rather than creating complex ones</li>
+        <li><strong>Document complex types:</strong> Use JSDoc comments for advanced patterns</li>
+        <li><strong>Leverage inference:</strong> Let TypeScript infer types when possible</li>
+        <li><strong>Test your types:</strong> Use type-level tests with tools like tsd</li>
+      </ul>
+      
+      <h3>Conclusion</h3>
+      <p>Advanced TypeScript patterns transform how you build React applications. They catch bugs at compile time, improve code documentation, and create better developer experiences. While the learning curve is steep, the benefits compound over time.</p>
+      
+      <p>Start incorporating these patterns gradually in your projects. Your future self (and your teammates) will thank you for the improved type safety and developer experience.</p>
+    `
+  }
+];
+
+// Navigation menu structure
+const NAVIGATION_ITEMS = [
+  {
+    label: 'Home',
+    url: '/',
+    order: 1
+  },
+  {
+    label: 'Features',
+    url: '/features',
+    order: 2,
+    children: [
+      {
+        label: 'TypeScript Support',
+        url: '/features/typescript',
+        order: 1
+      },
+      {
+        label: 'UI Components',
+        url: '/features/components',
+        order: 2
+      },
+      {
+        label: 'API Development',
+        url: '/features/api',
+        order: 3
+      }
+    ]
+  },
+  {
+    label: 'Documentation',
+    url: '/docs',
+    order: 3,
+    children: [
+      {
+        label: 'Getting Started',
+        url: '/docs/getting-started',
+        order: 1
+      },
+      {
+        label: 'API Reference',
+        url: '/docs/api',
+        order: 2
+      },
+      {
+        label: 'Deployment',
+        url: '/docs/deployment',
+        order: 3
+      }
+    ]
+  },
+  {
+    label: 'Blog',
+    url: '/blog',
+    order: 4
+  },
+  {
+    label: 'Contact',
+    url: '/contact',
+    order: 5
+  }
+];
+
+async function createSite() {
+  console.log('Creating site configuration...');
+  
+  const site = await strapi.entityService.create('api::site.site', {
+    data: {
+      name: 'Modern Web Starter Kit',
+      domains: SAMPLE_SITE_DOMAINS,
+      themeTokens: SAMPLE_THEME_TOKENS,
+      publishedAt: new Date(),
+      locale: 'en'
+    },
+  });
+  
+  console.log('✅ Site created:', site.documentId);
+  return site;
+}
+
+async function createNavigationItems(site: any) {
+  console.log('Creating navigation items...');
+  
+  const createdItems = [];
+  
+  // Create top-level navigation items first
+  for (const item of NAVIGATION_ITEMS) {
+    const navItem = await strapi.entityService.create('api::navigation-item.navigation-item', {
+      data: {
+        label: item.label,
+        url: item.url,
+        order: item.order,
+        site: site.documentId,
+        publishedAt: new Date(),
+        locale: 'en'
+      },
+    });
+    
+    createdItems.push({ ...navItem, originalItem: item });
+    console.log(`✅ Navigation item created: ${item.label}`);
+  }
+  
+  // Create child navigation items
+  for (const createdItem of createdItems) {
+    if (createdItem.originalItem.children) {
+      for (const childItem of createdItem.originalItem.children) {
+        await strapi.entityService.create('api::navigation-item.navigation-item', {
+          data: {
+            label: childItem.label,
+            url: childItem.url,
+            order: childItem.order,
+            parent: createdItem.documentId,
+            site: site.documentId,
+            publishedAt: new Date(),
+            locale: 'en'
+          },
+        });
+        
+        console.log(`  ✅ Child navigation item created: ${childItem.label}`);
+      }
+    }
+  }
+  
+  return createdItems;
+}
+
+async function createHomepage(site: any) {
+  console.log('Creating homepage with content blocks...');
+  
+  const contentBlocks = [
+    createHeroBlock(),
+    createFeaturesBlock(),
+    createRichTextBlock(),
+    createTestimonialBlock(),
+    createCarouselBlock(),
+    createFAQBlock(),
+    createAnimatedLogoRowBlock(),
+    createContactFormBlock(),
+    createNewsletterBlock(),
+    createCTABlock()
+  ];
+  
+  const homepage = await strapi.entityService.create('api::page.page', {
+    data: {
+      title: 'Home',
+      slug: 'home',
+      fullPath: '/',
+      content: contentBlocks,
+      seo: {
+        metaTitle: 'Modern Web Starter Kit - Build Amazing Applications',
+        metaDescription: 'The ultimate Strapi + Next.js starter kit for building modern, scalable web applications. Get started in minutes with TypeScript, Tailwind CSS, and best practices built-in.',
+        keywords: 'strapi, nextjs, typescript, tailwind css, starter kit, web development, react, cms',
+        metaRobots: 'index,follow',
+        structuredData: {
+          "@context": "https://schema.org",
+          "@type": "WebSite",
+          "name": "Modern Web Starter Kit",
+          "description": "The ultimate Strapi + Next.js starter kit for building modern, scalable web applications.",
+          "url": "https://example.com"
+        }
+      },
+      publishedAt: new Date(),
+      locale: 'en'
+    },
+  });
+  
+  console.log('✅ Homepage created with', contentBlocks.length, 'content blocks');
+  return homepage;
+}
+
+async function createSamplePages(site: any) {
+  console.log('Creating additional sample pages...');
+  
+  const pages = [
+    {
+      title: 'Features',
+      slug: 'features',
+      fullPath: '/features',
+      content: [
+        createFeaturesBlock(),
+        createRichTextBlock(),
+        createCTABlock()
+      ]
+    },
+    {
+      title: 'Documentation',
+      slug: 'documentation',
+      fullPath: '/docs',
+      content: [
+        {
+          __component: 'sections.heading-with-cta-button',
+          title: 'Documentation',
+          subText: 'Everything you need to know to get started with our starter kit.',
+          cta: {
+            label: 'View API Reference',
+            href: '/docs/api',
+            newTab: false
+          }
+        },
+        createRichTextBlock()
+      ]
+    },
+    {
+      title: 'Contact',
+      slug: 'contact',
+      fullPath: '/contact',
+      content: [
+        createContactFormBlock(),
+        {
+          __component: 'utilities.ck-editor-content',
+          content: `
+            <h2>Get in Touch</h2>
+            <p>We're here to help! Whether you have questions about our starter kit, need technical support, or want to discuss a custom project, we'd love to hear from you.</p>
+            
+            <h3>Office Hours</h3>
+            <p>Monday - Friday: 9:00 AM - 6:00 PM (UTC)<br>
+            Saturday: 10:00 AM - 4:00 PM (UTC)<br>
+            Sunday: Closed</p>
+            
+            <h3>Alternative Contact Methods</h3>
+            <ul>
+              <li><strong>Email:</strong> hello@example.com</li>
+              <li><strong>Phone:</strong> +1 (555) 123-4567</li>
+              <li><strong>Discord:</strong> Join our community server</li>
+              <li><strong>GitHub:</strong> Report issues and feature requests</li>
+            </ul>
+          `
+        }
+      ]
+    }
+  ];
+  
+  const createdPages = [];
+  for (const pageData of pages) {
+    const page = await strapi.entityService.create('api::page.page', {
+      data: {
+        ...pageData,
+        seo: {
+          metaTitle: `${pageData.title} - Modern Web Starter Kit`,
+          metaDescription: `Learn more about ${pageData.title.toLowerCase()} in our comprehensive starter kit.`,
+          metaRobots: 'index,follow'
+        },
+        publishedAt: new Date(),
+        locale: 'en'
+      },
+    });
+    
+    createdPages.push(page);
+    console.log(`✅ Page created: ${pageData.title}`);
+  }
+  
+  return createdPages;
+}
+
+async function createBlogPosts(site: any) {
+  console.log('Creating sample blog posts...');
+  
+  const createdPosts = [];
+  
+  for (const postData of SAMPLE_POSTS) {
+    const post = await strapi.entityService.create('api::post.post', {
+      data: {
+        ...postData,
+        site: site.documentId,
+        seo: {
+          metaTitle: `${postData.title} - Blog`,
+          metaDescription: postData.excerpt,
+          metaRobots: 'index,follow',
+          keywords: postData.title.toLowerCase().split(' ').join(', ')
+        },
+        publishedAt: new Date(),
+        locale: 'en'
+      },
+    });
+    
+    createdPosts.push(post);
+    console.log(`✅ Blog post created: ${postData.title}`);
+  }
+  
+  return createdPosts;
+}
+
+async function createNavbarAndFooter(site: any, navigationItems: any[]) {
+  console.log('Creating navbar configuration...');
+  
+  const topLevelNavItems = navigationItems
+    .filter(item => !item.originalItem.children)
+    .slice(0, 4) // Take first 4 items for navbar
+    .map(item => ({
+      label: item.label,
+      href: item.url,
+      newTab: false
+    }));
+  
+  await strapi.entityService.create('api::navbar.navbar', {
+    data: {
+      links: topLevelNavItems,
+      logoImage: {
+        image: {
+          media: null,
+          alt: 'Company Logo',
+          width: 150,
+          height: 50,
+          fallbackSrc: 'https://via.placeholder.com/150x50/3B82F6/FFFFFF?text=LOGO'
+        },
+        link: {
+          label: 'Home',
+          href: '/',
+          newTab: false
+        }
+      },
+      locale: 'en'
+    },
+  });
+  
+  console.log('✅ Navbar created');
+  
+  console.log('Creating footer configuration...');
+  
+  await strapi.entityService.create('api::footer.footer', {
+    data: {
+      copyRight: `© ${new Date().getFullYear()} Modern Web Starter Kit. All rights reserved.`,
+      logoImage: {
+        image: {
+          media: null,
+          alt: 'Company Logo',
+          width: 120,
+          height: 40,
+          fallbackSrc: 'https://via.placeholder.com/120x40/3B82F6/FFFFFF?text=LOGO'
+        },
+        link: {
+          label: 'Home',
+          href: '/',
+          newTab: false
+        }
+      },
+      sections: [
+        {
+          title: 'Product',
+          links: [
+            { label: 'Features', href: '/features', newTab: false },
+            { label: 'Documentation', href: '/docs', newTab: false },
+            { label: 'API Reference', href: '/docs/api', newTab: false },
+            { label: 'Changelog', href: '/changelog', newTab: false }
+          ]
+        },
+        {
+          title: 'Company',
+          links: [
+            { label: 'About', href: '/about', newTab: false },
+            { label: 'Blog', href: '/blog', newTab: false },
+            { label: 'Contact', href: '/contact', newTab: false },
+            { label: 'Careers', href: '/careers', newTab: false }
+          ]
+        },
+        {
+          title: 'Resources',
+          links: [
+            { label: 'Getting Started', href: '/docs/getting-started', newTab: false },
+            { label: 'Tutorials', href: '/tutorials', newTab: false },
+            { label: 'Community', href: '/community', newTab: false },
+            { label: 'Support', href: '/support', newTab: false }
+          ]
+        },
+        {
+          title: 'Legal',
+          links: [
+            { label: 'Privacy Policy', href: '/privacy', newTab: false },
+            { label: 'Terms of Service', href: '/terms', newTab: false },
+            { label: 'Cookie Policy', href: '/cookies', newTab: false },
+            { label: 'License', href: '/license', newTab: false }
+          ]
+        }
+      ],
+      links: [
+        { label: 'GitHub', href: 'https://github.com/example/repo', newTab: true },
+        { label: 'Twitter', href: 'https://twitter.com/example', newTab: true },
+        { label: 'Discord', href: 'https://discord.gg/example', newTab: true }
+      ],
+      locale: 'en'
+    },
+  });
+  
+  console.log('✅ Footer created');
+}
+
+export default async function seed() {
+  console.log('🌱 Starting database seeding...\n');
+  
+  try {
+    // Initialize Strapi
+    if (!strapi) {
+      strapi = await Strapi();
+      await strapi.load();
+    }
+    
+    // Create site configuration
+    const site = await createSite();
+    
+    // Create navigation structure  
+    const navigationItems = await createNavigationItems(site);
+    
+    // Create homepage with rich content
+    const homepage = await createHomepage(site);
+    
+    // Create additional pages
+    const pages = await createSamplePages(site);
+    
+    // Create blog posts
+    const posts = await createBlogPosts(site);
+    
+    // Create navbar and footer
+    await createNavbarAndFooter(site, navigationItems);
+    
+    console.log('\n🎉 Database seeding completed successfully!');
+    console.log(`
+📊 Summary:
+- ✅ Site configuration created
+- ✅ ${navigationItems.length} navigation items created
+- ✅ Homepage with ${10} content blocks created
+- ✅ ${pages.length} additional pages created
+- ✅ ${posts.length} blog posts created
+- ✅ Navbar and footer configured
+
+🚀 Your application is now populated with comprehensive sample data!
+Visit http://localhost:1337/admin to manage your content.
+    `);
+    
+  } catch (error) {
+    console.error('❌ Seeding failed:', error);
+    process.exit(1);
+  }
+}
+
+// Run the seed function if this file is executed directly
+if (require.main === module) {
+  seed().finally(() => {
+    process.exit(0);
+  });
+}

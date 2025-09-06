@@ -2203,4 +2203,4 @@ export const cs = {
   "seo.Information": "Informace",
   "seo.HomePage.info.information":
     "Při přidávaní komponentu pojmenujte tento atribut 'seo' a přidejte jej do kořene vaší kolekce.",
-}
+};

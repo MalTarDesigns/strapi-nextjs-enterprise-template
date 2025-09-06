@@ -1,0 +1,20 @@
+{
+  "collectionName": "components_blocks_feature_grids",
+  "info": {
+    "displayName": "Feature Grid",
+    "description": "Grid of features with icons, titles, and descriptions"
+  },
+  "options": {},
+  "attributes": {
+    "title": {
+      "type": "string",
+      "required": true
+    },
+    "features": {
+      "type": "component",
+      "repeatable": true,
+      "component": "utilities.feature",
+      "required": true
+    }
+  }
+}

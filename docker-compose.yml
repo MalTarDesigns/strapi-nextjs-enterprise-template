@@ -1,0 +1,137 @@
+# Docker Compose configuration for local development
+# Includes Postgres database, Strapi CMS, and Next.js web app
+#
+# Usage:
+#   Development: docker compose up -d
+#   Database only: docker compose up -d db
+#   Strapi only: docker compose up -d db strapi
+
+name: strapi-next-starter
+
+services:
+  # PostgreSQL Database
+  db:
+    platform: linux/amd64 # For Apple M1 chip compatibility
+    image: postgres:16.0-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${DATABASE_USERNAME:-admin}
+      POSTGRES_PASSWORD: ${DATABASE_PASSWORD:-mFm8z7z8}
+      POSTGRES_DB: ${DATABASE_NAME:-strapi-db}
+      POSTGRES_INITDB_ARGS: "--encoding=UTF-8 --lc-collate=C --lc-ctype=C"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      # Uncomment below to use bind mount instead of volume
+      # - ./data/postgres:/var/lib/postgresql/data
+    ports:
+      - "${DATABASE_PORT:-5432}:5432"
+    networks:
+      - strapi_network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${DATABASE_USERNAME:-admin} -d ${DATABASE_NAME:-strapi-db}"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 60s
+
+  # Strapi CMS
+  strapi:
+    build:
+      context: .
+      dockerfile: ./apps/strapi/Dockerfile
+      args:
+        APP: strapi
+        WORKSPACE: "@repo/strapi"
+    restart: unless-stopped
+    environment:
+      - NODE_ENV=development
+      - HOST=0.0.0.0
+      - PORT=1337
+      - DATABASE_CLIENT=postgres
+      - DATABASE_HOST=db
+      - DATABASE_PORT=5432
+      - DATABASE_NAME=${DATABASE_NAME:-strapi-db}
+      - DATABASE_USERNAME=${DATABASE_USERNAME:-admin}
+      - DATABASE_PASSWORD=${DATABASE_PASSWORD:-mFm8z7z8}
+      - DATABASE_SSL=false
+      - APP_KEYS=${APP_KEYS:-l8ftzyp2hNmEtNXBYU5hhQ==,lH7EcVVZxIoTFRorjrV9Vw==,jxWii7EjavRgJ4jYPZ60hA==,FlZM4tyij/HDFcKZhsmlXQ==}
+      - API_TOKEN_SALT=${API_TOKEN_SALT:-usReW/cYjLHmpLEoRnWf+g==}
+      - ADMIN_JWT_SECRET=${ADMIN_JWT_SECRET:-Xw39b/xXxEHW1x1WMM6ugQ==}
+      - JWT_SECRET=${JWT_SECRET:-ShuOcfjTi/RwcchWEIKYKA==}
+      - APP_URL=http://localhost:1337
+      - CLIENT_URL=http://localhost:3000
+      - STRAPI_PREVIEW_ENABLED=true
+      - STRAPI_PREVIEW_SECRET=${STRAPI_PREVIEW_SECRET:-your-secret-key}
+    volumes:
+      # Bind mount for development
+      - ./apps/strapi:/app/apps/strapi:cached
+      - /app/apps/strapi/node_modules
+      # Upload files volume
+      - strapi_uploads:/app/apps/strapi/public/uploads
+    ports:
+      - "1337:1337"
+    networks:
+      - strapi_network
+    depends_on:
+      db:
+        condition: service_healthy
+    command: ["pnpm", "develop"]
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:1337/_health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 120s
+
+  # Next.js Web Application (optional, for full-stack development)
+  web:
+    build:
+      context: .
+      dockerfile: ./apps/web/Dockerfile
+      target: dev
+    restart: unless-stopped
+    environment:
+      - NODE_ENV=development
+      - NEXT_PUBLIC_STRAPI_URL=http://localhost:1337
+      - STRAPI_URL=http://strapi:1337
+    volumes:
+      # Bind mount for development
+      - ./apps/web:/app/apps/web:cached
+      - /app/apps/web/node_modules
+      - /app/apps/web/.next
+    ports:
+      - "3000:3000"
+    networks:
+      - strapi_network
+    depends_on:
+      - strapi
+    command: ["pnpm", "dev"]
+    profiles:
+      - web
+      - full-stack
+
+  # Redis (optional, for caching and sessions)
+  redis:
+    image: redis:7.2-alpine
+    restart: unless-stopped
+    ports:
+      - "6379:6379"
+    networks:
+      - strapi_network
+    volumes:
+      - redis_data:/data
+    profiles:
+      - redis
+      - full-stack
+
+volumes:
+  postgres_data:
+    driver: local
+  strapi_uploads:
+    driver: local
+  redis_data:
+    driver: local
+
+networks:
+  strapi_network:
+    driver: bridge

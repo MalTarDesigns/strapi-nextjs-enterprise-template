@@ -1,0 +1,20 @@
+{
+  "collectionName": "components_blocks_faqs",
+  "info": {
+    "displayName": "FAQ",
+    "description": "Frequently Asked Questions section with title and FAQ items"
+  },
+  "options": {},
+  "attributes": {
+    "title": {
+      "type": "string",
+      "required": true
+    },
+    "items": {
+      "type": "component",
+      "repeatable": true,
+      "component": "utilities.faq-item",
+      "required": true
+    }
+  }
+}
