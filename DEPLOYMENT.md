@@ -284,6 +284,39 @@ pnpm deploy:strapi
 pnpm deploy:vercel
 ```
 
+### Vercel Plan Compatibility
+
+This template is designed to work with both Vercel Hobby and Pro plans:
+
+#### Hobby Plan (Free Tier)
+- **Limitation**: Cron jobs can only run once per day
+- **Configuration**: Template defaults to Hobby-compatible cron schedules
+- **Cron jobs**: 
+  - Sitemap regeneration: `0 2 * * *` (daily at 2 AM)
+  - Cache revalidation: `0 */6 * * *` (every 6 hours, but treated as daily by Hobby plan)
+
+#### Pro Plan (Paid Tier)  
+- **Advantage**: Can run frequent cron jobs
+- **Configuration**: Set `ENABLE_FREQUENT_CRON=true` in environment variables
+- **Frequent revalidation**: Enable `*/30 * * * *` (every 30 minutes) for better cache management
+
+#### Environment Configuration
+
+Add these variables to your Vercel project environment:
+
+```bash
+# Required for cron job authentication
+CRON_SECRET=your-unique-cron-secret
+
+# Plan compatibility (set false for Hobby plan)
+ENABLE_FREQUENT_CRON=false
+
+# Custom schedule (optional, defaults to 6-hour intervals)  
+CUSTOM_REVALIDATE_CRON_SCHEDULE=0 */6 * * *
+```
+
+**Note**: The template automatically uses Hobby-compatible schedules by default. Upgrade to Pro plan and set `ENABLE_FREQUENT_CRON=true` for more frequent cache revalidation.
+
 ## Monitoring and Maintenance
 
 ### Health Checks
