@@ -1,12 +1,15 @@
-import { Model } from "@strapi/database";
-import { UID } from "@strapi/strapi";
+import { Core } from "@strapi/strapi";
 
 export type StrapiPreviewConfig = {
   enabled: boolean;
   previewSecret?: string;
   clientUrl?: string;
-  enabledContentTypeUids: Array<UID.CollectionType>;
+  enabledContentTypeUids: Array<string>;
 };
 
-export type LifecycleEventType<T extends keyof Model["lifecycles"]> =
-  Parameters<Model["lifecycles"][T]>[0];
+export type LifecycleEventType<T extends string> = {
+  model?: any;
+  params?: any;
+  result?: any;
+  state?: any;
+};

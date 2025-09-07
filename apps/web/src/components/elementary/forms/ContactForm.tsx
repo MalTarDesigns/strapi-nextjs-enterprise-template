@@ -18,14 +18,14 @@ export function ContactForm({ gdpr }: Readonly) {
   const { toast } = useToast()
   const contactFormMutation = useContactForm()
 
-  const form = useForm<z.infer>({
+  const form = useForm<z.infer<typeof ContactFormSchema>>({
     resolver: zodResolver(ContactFormSchema),
     mode: "onBlur",
     reValidateMode: "onSubmit",
     defaultValues: { name: "", email: "", message: "" },
   })
 
-  const onSubmit = (values: z.infer) => {
+  const onSubmit = (values: z.infer<typeof ContactFormSchema>) => {
     contactFormMutation.mutate(values, {
       onSuccess: () => {
         toast({

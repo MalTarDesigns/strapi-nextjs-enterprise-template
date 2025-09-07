@@ -1,7 +1,7 @@
 "use client"
 
 import React, { Suspense } from "react"
-import { UID } from "@repo/strapi"
+// Using string type instead of UID.Component since UID is not available
 
 import { PageContentComponents } from "@/components/page-builder"
 import { Spinner } from "@/components/elementary/Spinner"
@@ -9,7 +9,7 @@ import { Spinner } from "@/components/elementary/Spinner"
 // Types for block data structure
 export interface StrapiBlockProps {
   id: number | string
-  __component: UID.Component
+  __component: string
   [key: string]: any
 }
 
@@ -126,12 +126,10 @@ const BlockItem: React.FC<{
       componentId={componentId}
       fallback={fallbackComponent}
     >
-      <Suspense fallback={<loadingComponent />}>
+      <Suspense fallback={loadingComponent ? <>{loadingComponent}</> : <Spinner className="mx-auto h-8 w-8" />}>
         <div className="mb-4 md:mb-12 lg:mb-16">
           <Component
-            component={block}
-            pageParams={pageParams}
-            page={page}
+            {...{ component: block, pageParams, page } as any}
           />
         </div>
       </Suspense>

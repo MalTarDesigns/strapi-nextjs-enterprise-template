@@ -31,7 +31,7 @@ export function RegisterForm() {
   const { toast } = useToast()
   const { registerMutation } = useUserMutations()
 
-  const form = useForm<z.infer>({
+  const form = useForm<z.infer<typeof RegisterFormSchema>>({
     resolver: zodResolver(RegisterFormSchema),
     mode: "onBlur",
     reValidateMode: "onBlur",
@@ -42,7 +42,7 @@ export function RegisterForm() {
     },
   })
 
-  async function onSubmit(values: z.infer) {
+  async function onSubmit(values: z.infer<typeof RegisterFormSchema>) {
     registerMutation.mutate(
       {
         username: values.email,

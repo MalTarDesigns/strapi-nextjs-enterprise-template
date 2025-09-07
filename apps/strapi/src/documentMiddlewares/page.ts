@@ -1,5 +1,3 @@
-import { FindOne } from "../../types";
-
 const pageTypes = ["api::page.page"];
 const pageActions = ["findMany"]; // We're using findMany to find the pages, but this could be adjusted to findOne per your needs
 
@@ -46,7 +44,7 @@ export const registerPopulatePageMiddleware = ({ strapi }) => {
   });
 };
 
-const pagePopulateObject: FindOne<"api::page.page">["populate"] = {
+const pagePopulateObject = {
   content: {
     on: {
       "sections.image-with-cta-button": {

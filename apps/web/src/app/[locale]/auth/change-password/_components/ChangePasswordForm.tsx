@@ -27,7 +27,7 @@ export function ChangePasswordForm() {
   const { toast } = useToast()
   const { changePasswordMutation } = useUserMutations()
 
-  const form = useForm<z.infer>({
+  const form = useForm<z.infer<typeof ChangePasswordFormSchema>>({
     resolver: zodResolver(ChangePasswordFormSchema),
     mode: "onBlur",
     reValidateMode: "onBlur",
@@ -38,7 +38,7 @@ export function ChangePasswordForm() {
     },
   })
 
-  const onSubmit = (data: z.infer) =>
+  const onSubmit = (data: z.infer<typeof ChangePasswordFormSchema>) =>
     changePasswordMutation.mutate(data, {
       onSuccess: () => {
         toast({

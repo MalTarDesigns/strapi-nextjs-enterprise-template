@@ -11,10 +11,10 @@ import {
 import { removeThisWhenYouNeedMe } from "@/lib/general-helpers"
 
 interface Props<T extends FieldValues = FieldValues> {
-  readonly form: UseFormReturn
+  readonly form: UseFormReturn<any>
   readonly onSubmit: (
     // eslint-disable-next-line no-unused-vars
-    values: T,
+    values: any,
     // eslint-disable-next-line no-unused-vars
     e?: BaseSyntheticEvent | undefined
   ) => void

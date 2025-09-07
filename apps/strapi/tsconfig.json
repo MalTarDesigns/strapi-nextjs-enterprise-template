@@ -37,6 +37,7 @@
     "src/admin/",
     // Do not include test files
     "**/*.test.*",
+    "tests/**",
     // Do not include plugins in the server compilation
     "src/plugins/**",
     // https://docs.strapi.io/dev-docs/typescript/development#fix-build-issues-with-the-generated-types

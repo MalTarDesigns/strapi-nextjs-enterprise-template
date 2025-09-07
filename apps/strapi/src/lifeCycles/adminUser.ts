@@ -1,4 +1,3 @@
-import { Event } from "@strapi/database/dist/lifecycles";
 import { Core } from "@strapi/strapi";
 
 export const registerAdminUserSubscriber = async ({
@@ -20,7 +19,7 @@ export const registerAdminUserSubscriber = async ({
  * Email is sent:
  *  - if the admin is created from the admin panel
  */
-const sendEmail = async (strapi: Core.Strapi, event: Event) => {
+const sendEmail = async (strapi: Core.Strapi, event: any) => {
   const { email, registrationToken } = event.result ?? {};
 
   if (registrationToken && email) {

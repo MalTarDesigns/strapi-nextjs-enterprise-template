@@ -15,7 +15,7 @@ const baseUrl = env.APP_PUBLIC_URL
  * Note: We could use generateSitemaps to separate the sitemaps, however that does not create the root sitemap.
  */
 
-export default async function sitemap(): Promise {
+export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   if (!isProduction() && !isDevelopment()) {
     return []
   }
@@ -39,8 +39,8 @@ export default async function sitemap(): Promise {
  * @param locale locale to retrieve (must be defined in routing `@/lib/navigation`)
  * @returns Sitemap entries for a single locale
  */
-async function generateLocalizedSitemap(locale: AppLocale): Promise {
-  let pageEntities: Partial = {}
+async function generateLocalizedSitemap(locale: AppLocale): Promise<MetadataRoute.Sitemap> {
+  let pageEntities: Partial<any> = {}
 
   // Fetch all records for each entity individually
   for (const entityUid of pageEntityUids) {
@@ -56,7 +56,7 @@ async function generateLocalizedSitemap(locale: AppLocale): Promise {
    * alongside mapping of changeFrequency
    */
   return Object.entries(pageEntities).reduce((acc, [uid, pages]) => {
-    pages.forEach((page) => {
+    pages.forEach((page: any) => {
       if (page.fullPath) {
         acc.push({
           url: generateSitemapEntryUrl(page.fullPath, String(page.locale)),
@@ -100,6 +100,6 @@ type PageEntityUID = (typeof pageEntityUids)[number]
  * Object that determines default changeFrequency attribute for crawlers.
  * For example, pages may change once a month or year, whereas blog articles could update weekly
  */
-const entityChangeFrequency: Record = {
+const entityChangeFrequency: Record<string, any> = {
   "api::page.page": "monthly",
 }

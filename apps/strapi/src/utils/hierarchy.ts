@@ -1,9 +1,7 @@
-import { errors } from "@strapi/utils";
+import { Core } from "@strapi/strapi";
 
-import { ID } from "../../types";
+type ID = string;
 import { LifecycleEventType } from "../../types/internals";
-
-const { ValidationError } = errors;
 
 // Debugging
 const LOGGER = false;

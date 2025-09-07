@@ -29,14 +29,14 @@ export function SignInForm() {
   const searchParams = useSearchParams()
   const callbackUrl = searchParams.get("callbackUrl") ?? "/"
 
-  const form = useForm<z.infer>({
+  const form = useForm<z.infer<typeof SignInFormSchema>>({
     resolver: zodResolver(SignInFormSchema),
     mode: "onBlur",
     reValidateMode: "onBlur",
     defaultValues: { email: "", password: "" },
   })
 
-  async function onSubmit(values: z.infer) {
+  async function onSubmit(values: z.infer<typeof SignInFormSchema>) {
     const res = await signIn("credentials", {
       ...values,
       callbackUrl,

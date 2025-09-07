@@ -1,4 +1,3 @@
-import { Event } from "@strapi/database/dist/lifecycles";
 import { Core } from "@strapi/strapi";
 
 const crypto = require("crypto");
@@ -23,7 +22,7 @@ export const registerUserSubscriber = async ({
  *  - if the user is created from the admin panel - `confirmed` is set by the admin in Strapi
  *  - if the user is created via "/auth/local/register" - `confirmed` is always set to true by default
  */
-const sendEmail = async (strapi: Core.Strapi, event: Event) => {
+const sendEmail = async (strapi: Core.Strapi, event: any) => {
   const { email, documentId, firstName, lastName, confirmed } =
     event.result ?? {};
 

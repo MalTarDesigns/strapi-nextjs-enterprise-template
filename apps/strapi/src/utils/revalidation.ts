@@ -1,5 +1,3 @@
-import { env } from "@strapi/strapi/lib/services/server"
-
 interface RevalidationPayload {
   event: 'entry.create' | 'entry.update' | 'entry.delete' | 'entry.publish' | 'entry.unpublish'
   model: string
@@ -67,7 +65,7 @@ export function createPageRevalidationPayload(
   entry: any
 ): RevalidationPayload {
   const paths: string[] = []
-  
+
   // Add the specific page URL
   if (entry.url) {
     paths.push(entry.url)

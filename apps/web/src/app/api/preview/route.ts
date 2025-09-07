@@ -87,7 +87,7 @@ export async function GET(request: NextRequest) {
     console.log(`[STRAPI_PREVIEW]: Preview request processed successfully`, previewDetails)
 
     // Redirect to the preview page
-    redirect({ href: `${url}`, locale: finalLocale })
+    redirect({ href: url!, locale: finalLocale as string })
 
   } catch (error) {
     console.error("[STRAPI_PREVIEW]: Unexpected error during preview processing:", error)

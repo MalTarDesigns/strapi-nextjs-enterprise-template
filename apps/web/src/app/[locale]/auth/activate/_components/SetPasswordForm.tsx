@@ -29,7 +29,7 @@ export function SetPasswordForm({ accountActivation = false }) {
   const { toast } = useToast()
   const { resetPasswordMutation } = useUserMutations()
 
-  const form = useForm<z.infer>({
+  const form = useForm<z.infer<typeof SetPasswordFormSchema>>({
     resolver: zodResolver(SetPasswordFormSchema),
     mode: "onBlur",
     reValidateMode: "onBlur",
@@ -40,7 +40,7 @@ export function SetPasswordForm({ accountActivation = false }) {
   const params = useSearchParams()
   const code = params.get("code") as string
 
-  const onSubmit = (data: z.infer) =>
+  const onSubmit = (data: z.infer<typeof SetPasswordFormSchema>) =>
     resetPasswordMutation.mutate(
       { code, ...data },
       {

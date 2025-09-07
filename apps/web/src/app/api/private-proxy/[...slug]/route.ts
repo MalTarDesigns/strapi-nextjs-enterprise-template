@@ -10,7 +10,7 @@ import { env } from "@/env.mjs"
  *
  * Authorization tokens are injected on the client-side, based on NextAuth's session.
  */
-async function handler(request: Request, { params }: { params: Promise }) {
+async function handler(request: Request, { params }: { params: Promise<{ slug: string[] }> }) {
   const { slug } = await params
 
   const path = Array.isArray(slug) ? slug.join("/") : slug

@@ -26,14 +26,14 @@ export function ForgotPasswordForm() {
   const { toast } = useToast()
   const { forgotPasswordMutation } = useUserMutations()
 
-  const form = useForm<z.infer>({
+  const form = useForm<z.infer<typeof ForgotPasswordFormSchema>>({
     resolver: zodResolver(ForgotPasswordFormSchema),
     mode: "onBlur",
     reValidateMode: "onBlur",
     defaultValues: { email: "" },
   })
 
-  const onSubmit = (data: z.infer) =>
+  const onSubmit = (data: z.infer<typeof ForgotPasswordFormSchema>) =>
     forgotPasswordMutation.mutate(data, {
       onSuccess: () => {
         toast({

@@ -16,7 +16,7 @@ import {
  * Since the STRAPI_REST_READONLY_API_KEY is injected into every GET request and Strapi does not block findOne and findMany
  * operations for any content type, this proxy checks if the requested content type is allowed to be fetched.
  */
-async function handler(request: Request, { params }: { params: Promise }) {
+async function handler(request: Request, { params }: { params: Promise<{ slug: string[] }> }) {
   const { slug } = await params
 
   const path = Array.isArray(slug) ? slug.join("/") : slug
