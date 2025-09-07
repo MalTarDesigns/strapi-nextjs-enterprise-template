@@ -13,19 +13,27 @@ import { AppTextArea } from "@/components/forms/AppTextArea"
 import { Button } from "@/components/ui/button"
 import { useToast } from "@/components/ui/use-toast"
 
-export function ContactForm({ gdpr }: Readonly) {
+interface ContactFormProps {
+  readonly gdpr?: {
+    readonly href?: string
+    readonly newTab?: boolean
+    readonly label?: string
+  }
+}
+
+export function ContactForm({ gdpr }: ContactFormProps) {
   const t = useTranslations("contactForm")
   const { toast } = useToast()
   const contactFormMutation = useContactForm()
 
-  const form = useForm<z.infer<typeof ContactFormSchema>>({
+  const form = useForm<z.infer>({
     resolver: zodResolver(ContactFormSchema),
     mode: "onBlur",
     reValidateMode: "onSubmit",
     defaultValues: { name: "", email: "", message: "" },
   })
 
-  const onSubmit = (values: z.infer<typeof ContactFormSchema>) => {
+  const onSubmit = (values: z.infer) => {
     contactFormMutation.mutate(values, {
       onSuccess: () => {
         toast({
@@ -62,7 +70,6 @@ export function ContactForm({ gdpr }: Readonly) {
         />
         <AppTextArea
           name="message"
-          type="text"
           required
           label={t("message")}
           aria-label="contact-message"

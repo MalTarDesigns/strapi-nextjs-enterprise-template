@@ -71,7 +71,6 @@ export function AppSelect({
                   { "border-red-600": fieldState.invalid },
                   fieldClassName
                 )}
-                tabIndex={nativeProps.tabIndex}
                 onBlur={field.onBlur}
               >
                 <SelectValue placeholder={placeholder} />

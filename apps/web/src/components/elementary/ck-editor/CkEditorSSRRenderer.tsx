@@ -5,6 +5,7 @@ import { cn } from "@/lib/styles"
 import { processLinkHrefAttribute } from "@/components/elementary/ck-editor/utils"
 
 import "@/styles/CkEditorDefaultStyles.css"
+
 // Remove server-only import as this component might be bundled for client
 
 const CkEditorSSRRenderer = async ({

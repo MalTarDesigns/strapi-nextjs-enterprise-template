@@ -1,7 +1,7 @@
 import { Data } from "@repo/strapi"
 
-import { Container } from "@/components/elementary/Container"
 import CkEditorSSRRenderer from "@/components/elementary/ck-editor/CkEditorSSRRenderer"
+import { Container } from "@/components/elementary/Container"
 import Heading from "@/components/typography/Heading"
 import { Paragraph } from "@/components/typography/Paragraph"
 
@@ -37,27 +37,33 @@ export function RichTextBlock({
   return (
     <section className={`py-12 lg:py-20 ${className || ""}`}>
       <Container>
-        <div className={`${containerClasses[containerWidth]} ${textAlignClasses[textAlign]}`}>
+        <div
+          className={`${containerClasses[containerWidth]} ${textAlignClasses[textAlign]}`}
+        >
           {(title || subTitle) && (
             <div className="mb-8">
               {title && (
-                <Heading 
-                  tag="h2" 
-                  variant="heading2" 
+                <Heading
+                  tag="h2"
+                  variant="heading2"
                   className={`mb-4 ${textAlignClasses[textAlign]}`}
                 >
                   {title}
                 </Heading>
               )}
               {subTitle && (
-                <Paragraph className={`text-muted-foreground ${textAlignClasses[textAlign]}`}>
+                <Paragraph
+                  className={`text-muted-foreground ${textAlignClasses[textAlign]}`}
+                >
                   {subTitle}
                 </Paragraph>
               )}
             </div>
           )}
-          
-          <div className={`prose prose-gray max-w-none dark:prose-invert ${textAlignClasses[textAlign]}`}>
+
+          <div
+            className={`prose prose-gray dark:prose-invert max-w-none ${textAlignClasses[textAlign]}`}
+          >
             <CkEditorSSRRenderer htmlContent={content} />
           </div>
         </div>

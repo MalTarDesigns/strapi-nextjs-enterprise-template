@@ -2,16 +2,16 @@
 
 import React, { createContext, useContext, useEffect, useState } from "react"
 
-import { SiteConfig, ThemeTokens } from "@/lib/theme/types"
 import { getSiteConfig, getThemeTokens } from "@/lib/theme/site-config"
 import { injectThemeVariables } from "@/lib/theme/theme-injection"
+import { SiteConfig, ThemeTokens } from "@/lib/theme/types"
 
 interface ThemeContextValue {
   siteConfig: SiteConfig | null
   themeTokens: ThemeTokens
   isLoading: boolean
   updateTheme: (tokens: ThemeTokens) => void
-  refreshSiteConfig: () => Promise<void>
+  refreshSiteConfig: () => Promise
 }
 
 const ThemeContext = createContext<ThemeContextValue | undefined>(undefined)
@@ -22,14 +22,16 @@ interface ThemeProviderProps {
   initialSiteConfig?: SiteConfig | null
 }
 
-export function SiteThemeProvider({ 
-  children, 
-  locale, 
-  initialSiteConfig = null 
+export function SiteThemeProvider({
+  children,
+  locale,
+  initialSiteConfig = null,
 }: ThemeProviderProps) {
-  const [siteConfig, setSiteConfig] = useState<SiteConfig | null>(initialSiteConfig)
+  const [siteConfig, setSiteConfig] = useState<SiteConfig | null>(
+    initialSiteConfig
+  )
   const [isLoading, setIsLoading] = useState(!initialSiteConfig)
-  
+
   const themeTokens = getThemeTokens(siteConfig)
 
   const updateTheme = (tokens: ThemeTokens) => {
@@ -43,7 +45,7 @@ export function SiteThemeProvider({
     try {
       const config = await getSiteConfig(locale)
       setSiteConfig(config)
-      
+
       // Apply new theme if config was loaded
       if (config?.themeTokens) {
         updateTheme(config.themeTokens)
@@ -74,7 +76,7 @@ export function SiteThemeProvider({
     themeTokens,
     isLoading,
     updateTheme,
-    refreshSiteConfig
+    refreshSiteConfig,
   }
 
   return (

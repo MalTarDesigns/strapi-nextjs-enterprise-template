@@ -1,10 +1,11 @@
 "use client"
 
 import React, { Suspense } from "react"
+
+import { Spinner } from "@/components/elementary/Spinner"
 // Using string type instead of UID.Component since UID is not available
 
 import { PageContentComponents } from "@/components/page-builder"
-import { Spinner } from "@/components/elementary/Spinner"
 
 // Types for block data structure
 export interface StrapiBlockProps {
@@ -16,14 +17,14 @@ export interface StrapiBlockProps {
 export interface BlockRendererProps {
   blocks?: StrapiBlockProps[] | null
   className?: string
-  fallbackComponent?: React.ComponentType<{ error: Error }>
+  fallbackComponent?: React.ComponentType
   loadingComponent?: React.ComponentType
   pageParams?: any
   page?: any
 }
 
 // Default fallback component for errors
-const DefaultErrorFallback: React.FC<{ error: Error }> = ({ error }) => (
+const DefaultErrorFallback: React.FC = ({ error }) => (
   <div className="rounded-md border border-red-200 bg-red-50 p-4">
     <div className="flex">
       <div className="ml-3">
@@ -44,15 +45,7 @@ const DefaultLoadingComponent: React.FC = () => (
 )
 
 // Individual block error boundary
-class BlockErrorBoundary extends React.Component<
-  {
-    children: React.ReactNode
-    fallback: React.ComponentType<{ error: Error }>
-    componentName: string
-    componentId: string | number
-  },
-  { hasError: boolean; error?: Error }
-> {
+class BlockErrorBoundary extends React.Component {
   constructor(props: any) {
     super(props)
     this.state = { hasError: false }
@@ -81,13 +74,13 @@ class BlockErrorBoundary extends React.Component<
 }
 
 // Individual block renderer
-const BlockItem: React.FC<{
-  block: StrapiBlockProps
-  fallbackComponent: React.ComponentType<{ error: Error }>
-  loadingComponent: React.ComponentType
-  pageParams?: any
-  page?: any
-}> = ({ block, fallbackComponent, loadingComponent, pageParams, page }) => {
+const BlockItem: React.FC = ({
+  block,
+  fallbackComponent,
+  loadingComponent,
+  pageParams,
+  page,
+}) => {
   const componentName = block.__component
   const componentId = block.id
   const key = `${componentName}-${componentId}`
@@ -96,10 +89,15 @@ const BlockItem: React.FC<{
   const Component = PageContentComponents[componentName]
 
   if (!Component) {
-    console.warn(`Unknown component "${componentName}" with id "${componentId}".`)
-    
+    console.warn(
+      `Unknown component "${componentName}" with id "${componentId}".`
+    )
+
     return (
-      <div key={key} className="rounded-md border border-yellow-200 bg-yellow-50 p-4">
+      <div
+        key={key}
+        className="rounded-md border border-yellow-200 bg-yellow-50 p-4"
+      >
         <div className="flex">
           <div className="ml-3">
             <h3 className="text-sm font-medium text-yellow-800">
@@ -111,7 +109,8 @@ const BlockItem: React.FC<{
                 implemented in the frontend.
               </p>
               <p className="mt-1 text-xs">
-                Add this component to PageContentComponents in /components/page-builder/index.tsx
+                Add this component to PageContentComponents in
+                /components/page-builder/index.tsx
               </p>
             </div>
           </div>
@@ -126,11 +125,17 @@ const BlockItem: React.FC<{
       componentId={componentId}
       fallback={fallbackComponent}
     >
-      <Suspense fallback={loadingComponent ? <>{loadingComponent}</> : <Spinner className="mx-auto h-8 w-8" />}>
+      <Suspense
+        fallback={
+          loadingComponent ? (
+            <>{loadingComponent}</>
+          ) : (
+            <Spinner className="mx-auto h-8 w-8" />
+          )
+        }
+      >
         <div className="mb-4 md:mb-12 lg:mb-16">
-          <Component
-            {...{ component: block, pageParams, page } as any}
-          />
+          <Component {...({ component: block, pageParams, page } as any)} />
         </div>
       </Suspense>
     </BlockErrorBoundary>
@@ -138,7 +143,7 @@ const BlockItem: React.FC<{
 }
 
 // Main BlockRenderer component
-export const BlockRenderer: React.FC<BlockRendererProps> = ({
+export const BlockRenderer: React.FC = ({
   blocks,
   className = "",
   fallbackComponent = DefaultErrorFallback,
@@ -164,7 +169,9 @@ export const BlockRenderer: React.FC<BlockRendererProps> = ({
     return (
       <div className={`empty-blocks ${className}`}>
         <div className="rounded-md border border-gray-200 bg-gray-50 p-8 text-center">
-          <p className="text-sm text-gray-500">No valid content blocks found.</p>
+          <p className="text-sm text-gray-500">
+            No valid content blocks found.
+          </p>
         </div>
       </div>
     )
@@ -174,7 +181,7 @@ export const BlockRenderer: React.FC<BlockRendererProps> = ({
     <div className={`block-renderer ${className}`}>
       {validBlocks.map((block, index) => {
         const key = `${block.__component}-${block.id}-${index}`
-        
+
         return (
           <BlockItem
             key={key}

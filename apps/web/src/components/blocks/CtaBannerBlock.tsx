@@ -51,7 +51,9 @@ export function CtaBannerBlock({
   }
 
   const renderContent = () => (
-    <div className={`text-center ${layout === "split" ? "md:text-left" : ""} ${layout === "image-left" ? "md:text-left" : ""} ${layout === "image-right" ? "md:text-right" : ""}`}>
+    <div
+      className={`text-center ${layout === "split" ? "md:text-left" : ""} ${layout === "image-left" ? "md:text-left" : ""} ${layout === "image-right" ? "md:text-right" : ""}`}
+    >
       <Heading
         tag="h2"
         variant="heading2"
@@ -59,7 +61,7 @@ export function CtaBannerBlock({
       >
         {title}
       </Heading>
-      
+
       {description && (
         <Paragraph
           className={`mb-6 text-lg ${textColorClasses[textColor]} ${textColor === "light" ? "text-white/90" : "text-muted-foreground"}`}
@@ -67,7 +69,7 @@ export function CtaBannerBlock({
           {description}
         </Paragraph>
       )}
-      
+
       <div className="flex flex-col gap-3 sm:flex-row sm:justify-center">
         {primaryButton && (
           <Button asChild size="lg" className="group">
@@ -85,7 +87,7 @@ export function CtaBannerBlock({
             </a>
           </Button>
         )}
-        
+
         {secondaryButton && (
           <Button asChild variant="outline" size="lg">
             <a
@@ -104,9 +106,11 @@ export function CtaBannerBlock({
     </div>
   )
 
-  const renderImage = () => 
+  const renderImage = () =>
     backgroundImage && (
-      <div className={`relative ${layout === "split" ? "md:col-span-6" : ""} ${layout === "image-left" ? "md:order-first" : ""} ${layout === "image-right" ? "md:order-last" : ""}`}>
+      <div
+        className={`relative ${layout === "split" ? "md:col-span-6" : ""} ${layout === "image-left" ? "md:order-first" : ""} ${layout === "image-right" ? "md:order-last" : ""}`}
+      >
         <StrapiBasicImage
           component={backgroundImage}
           className="rounded-xl object-cover"
@@ -115,19 +119,29 @@ export function CtaBannerBlock({
       </div>
     )
 
-  if (layout === "split" || layout === "image-left" || layout === "image-right") {
+  if (
+    layout === "split" ||
+    layout === "image-left" ||
+    layout === "image-right"
+  ) {
     return (
       <section
         className={sizeClasses[size]}
         style={{ backgroundColor: backgroundColor ?? "transparent" }}
       >
         <Container>
-          <div className={`grid gap-8 items-center ${backgroundImage ? "md:grid-cols-12" : ""}`}>
-            <div className={`${backgroundImage ? "md:col-span-6" : ""} ${layout === "image-right" ? "md:order-first" : ""}`}>
+          <div
+            className={`grid items-center gap-8 ${backgroundImage ? "md:grid-cols-12" : ""}`}
+          >
+            <div
+              className={`${backgroundImage ? "md:col-span-6" : ""} ${layout === "image-right" ? "md:order-first" : ""}`}
+            >
               {renderContent()}
             </div>
             {backgroundImage && (
-              <div className={`md:col-span-6 ${layout === "image-left" ? "md:order-first" : ""}`}>
+              <div
+                className={`md:col-span-6 ${layout === "image-left" ? "md:order-first" : ""}`}
+              >
                 <StrapiBasicImage
                   component={backgroundImage}
                   className="rounded-xl object-cover"
@@ -151,15 +165,13 @@ export function CtaBannerBlock({
           <StrapiBasicImage
             component={backgroundImage}
             className="object-cover"
-            fill
+            forcedSizes={{ width: null, height: null }}
           />
           <div className="absolute inset-0 bg-black/40" />
         </div>
       )}
-      
-      <Container className="relative z-10">
-        {renderContent()}
-      </Container>
+
+      <Container className="relative z-10">{renderContent()}</Container>
     </section>
   )
 }

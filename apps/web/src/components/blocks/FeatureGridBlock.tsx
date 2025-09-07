@@ -1,17 +1,17 @@
 import { Data } from "@repo/strapi"
-import { 
-  Zap, 
-  Shield, 
-  Users, 
-  Smartphone, 
-  Clock, 
-  Star,
+import {
   CheckCircle,
-  TrendingUp,
+  Clock,
   Globe,
-  Lock,
   Heart,
-  Lightbulb
+  Lightbulb,
+  Lock,
+  Shield,
+  Smartphone,
+  Star,
+  TrendingUp,
+  Users,
+  Zap,
 } from "lucide-react"
 
 import { Container } from "@/components/elementary/Container"
@@ -77,25 +77,30 @@ export function FeatureGridBlock({
               </Heading>
             )}
             {subTitle && (
-              <Paragraph className="text-muted-foreground max-w-3xl mx-auto">
+              <Paragraph className="text-muted-foreground mx-auto max-w-3xl">
                 {subTitle}
               </Paragraph>
             )}
           </div>
         )}
 
-        <div className={`grid gap-6 sm:grid-cols-2 ${gridCols[columns]} lg:gap-8`}>
+        <div
+          className={`grid gap-6 sm:grid-cols-2 ${gridCols[columns]} lg:gap-8`}
+        >
           {features.map((feature) => {
             const IconComponent = feature.icon ? iconMap[feature.icon] : null
 
             return (
-              <Card key={feature.id} className="group h-full border-0 bg-background/60 backdrop-blur-sm transition-all hover:bg-background/80 hover:shadow-lg">
+              <Card
+                key={feature.id}
+                className="group bg-background/60 hover:bg-background/80 h-full border-0 backdrop-blur-sm transition-all hover:shadow-lg"
+              >
                 <CardHeader className="pb-4">
                   <div className="flex items-start gap-4">
                     {showIcons && (IconComponent || feature.image) && (
                       <div className="flex-shrink-0">
                         {IconComponent ? (
-                          <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-primary/10 text-primary group-hover:bg-primary group-hover:text-primary-foreground transition-colors">
+                          <div className="bg-primary/10 text-primary group-hover:bg-primary group-hover:text-primary-foreground flex h-12 w-12 items-center justify-center rounded-lg transition-colors">
                             <IconComponent className="h-6 w-6" />
                           </div>
                         ) : feature.image ? (
@@ -123,7 +128,7 @@ export function FeatureGridBlock({
                   {feature.link && (
                     <StrapiLink
                       component={feature.link}
-                      className="inline-flex items-center text-sm font-medium text-primary hover:underline"
+                      className="text-primary inline-flex items-center text-sm font-medium hover:underline"
                     />
                   )}
                 </CardContent>

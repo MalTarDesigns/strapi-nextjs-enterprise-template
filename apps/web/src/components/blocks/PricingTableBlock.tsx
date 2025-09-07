@@ -1,13 +1,13 @@
 import { Data } from "@repo/strapi"
-import { Check, X, Star, Zap } from "lucide-react"
+import { Check, Star, X, Zap } from "lucide-react"
 
 import { Container } from "@/components/elementary/Container"
 import StrapiLink from "@/components/page-builder/components/utilities/StrapiLink"
 import Heading from "@/components/typography/Heading"
 import { Paragraph } from "@/components/typography/Paragraph"
+import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader } from "@/components/ui/card"
-import { Badge } from "@/components/ui/badge"
 
 export interface PricingFeature {
   readonly id: number
@@ -51,7 +51,7 @@ export function PricingTableBlock({
 }: PricingTableBlockProps) {
   const gridCols = {
     2: "md:grid-cols-2",
-    3: "md:grid-cols-3", 
+    3: "md:grid-cols-3",
     4: "md:grid-cols-4",
   }
 
@@ -74,7 +74,7 @@ export function PricingTableBlock({
               </Heading>
             )}
             {subTitle && (
-              <Paragraph className="text-muted-foreground max-w-3xl mx-auto">
+              <Paragraph className="text-muted-foreground mx-auto max-w-3xl">
                 {subTitle}
               </Paragraph>
             )}
@@ -87,8 +87,8 @@ export function PricingTableBlock({
               key={plan.id}
               className={`relative h-full transition-all duration-300 hover:shadow-lg ${
                 highlightPopular && plan.isPopular
-                  ? "border-2 border-primary scale-105 shadow-xl"
-                  : "border border-border/50"
+                  ? "border-primary scale-105 border-2 shadow-xl"
+                  : "border-border/50 border"
               }`}
             >
               {highlightPopular && plan.isPopular && (
@@ -101,17 +101,17 @@ export function PricingTableBlock({
               )}
 
               <CardHeader className="text-center">
-                <div className="flex items-center justify-center gap-2 mb-2">
+                <div className="mb-2 flex items-center justify-center gap-2">
                   <Heading tag="h3" variant="heading4">
                     {plan.name}
                   </Heading>
                   {plan.isPopular && !highlightPopular && (
-                    <Zap className="h-4 w-4 text-primary fill-current" />
+                    <Zap className="text-primary h-4 w-4 fill-current" />
                   )}
                 </div>
-                
+
                 {plan.description && (
-                  <Paragraph className="text-sm text-muted-foreground mb-4">
+                  <Paragraph className="text-muted-foreground mb-4 text-sm">
                     {plan.description}
                   </Paragraph>
                 )}
@@ -122,30 +122,36 @@ export function PricingTableBlock({
                       {formatPrice(plan.price, plan.currency)}
                     </span>
                     {plan.billingPeriod && (
-                      <span className="text-sm text-muted-foreground">
+                      <span className="text-muted-foreground text-sm">
                         /{plan.billingPeriod}
                       </span>
                     )}
                   </div>
-                  
+
                   {plan.originalPrice && plan.originalPrice > plan.price && (
                     <div className="mt-1">
-                      <span className="text-sm text-muted-foreground line-through">
+                      <span className="text-muted-foreground text-sm line-through">
                         {formatPrice(plan.originalPrice, plan.currency)}
                       </span>
                       <span className="ml-2 text-sm font-medium text-green-600">
-                        Save {Math.round(((plan.originalPrice - plan.price) / plan.originalPrice) * 100)}%
+                        Save{" "}
+                        {Math.round(
+                          ((plan.originalPrice - plan.price) /
+                            plan.originalPrice) *
+                            100
+                        )}
+                        %
                       </span>
                     </div>
                   )}
                 </div>
 
                 {plan.ctaLabel && (
-                  <Button 
-                    asChild 
+                  <Button
+                    asChild
                     className={`w-full ${
-                      highlightPopular && plan.isPopular 
-                        ? "bg-primary hover:bg-primary/90" 
+                      highlightPopular && plan.isPopular
+                        ? "bg-primary hover:bg-primary/90"
                         : ""
                     }`}
                   >
@@ -164,7 +170,7 @@ export function PricingTableBlock({
                 <ul className="space-y-3">
                   {plan.features.map((feature) => (
                     <li key={feature.id} className="flex items-start gap-3">
-                      <div className="flex-shrink-0 mt-0.5">
+                      <div className="mt-0.5 flex-shrink-0">
                         {feature.included ? (
                           <Check className="h-4 w-4 text-green-600" />
                         ) : (
@@ -172,15 +178,17 @@ export function PricingTableBlock({
                         )}
                       </div>
                       <div>
-                        <span className={`text-sm ${
-                          feature.included 
-                            ? "text-foreground" 
-                            : "text-muted-foreground line-through"
-                        }`}>
+                        <span
+                          className={`text-sm ${
+                            feature.included
+                              ? "text-foreground"
+                              : "text-muted-foreground line-through"
+                          }`}
+                        >
                           {feature.name}
                         </span>
                         {feature.description && (
-                          <p className="text-xs text-muted-foreground mt-1">
+                          <p className="text-muted-foreground mt-1 text-xs">
                             {feature.description}
                           </p>
                         )}
@@ -195,7 +203,7 @@ export function PricingTableBlock({
 
         {showAnnualDiscount && (
           <div className="mt-8 text-center">
-            <Paragraph className="text-sm text-muted-foreground">
+            <Paragraph className="text-muted-foreground text-sm">
               💰 Save up to 20% with annual billing
             </Paragraph>
           </div>

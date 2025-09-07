@@ -30,7 +30,7 @@ export const ImageWithBlur = ({
   return (
     <Image
       placeholder="blur"
-      blurDataURL={rgbDataURL(...blurRgb)}
+      blurDataURL={rgbDataURL(blurRgb[0], blurRgb[1], blurRgb[2])}
       {...imgProps}
     />
   )

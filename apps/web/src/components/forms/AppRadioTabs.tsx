@@ -22,7 +22,7 @@ type Props = {
   readonly label?: React.ReactNode
   readonly containerClassName?: string
   readonly description?: React.ReactNode
-  readonly tabListProps?: React.ComponentProps
+  readonly tabListProps?: React.ComponentPropsWithoutRef
   readonly required?: boolean
 }
 

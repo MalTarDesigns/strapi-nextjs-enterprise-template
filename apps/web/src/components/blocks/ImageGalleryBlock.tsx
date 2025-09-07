@@ -1,6 +1,6 @@
 import { useState } from "react"
 import { Data } from "@repo/strapi"
-import { X, ChevronLeft, ChevronRight, Expand } from "lucide-react"
+import { ChevronLeft, ChevronRight, Expand, X } from "lucide-react"
 
 import { Container } from "@/components/elementary/Container"
 import { StrapiBasicImage } from "@/components/page-builder/components/utilities/StrapiBasicImage"
@@ -72,15 +72,11 @@ export function ImageGalleryBlock({
   }
 
   const previousImage = () => {
-    setCurrentImageIndex((prev) => 
-      prev === 0 ? images.length - 1 : prev - 1
-    )
+    setCurrentImageIndex((prev) => (prev === 0 ? images.length - 1 : prev - 1))
   }
 
   const nextImage = () => {
-    setCurrentImageIndex((prev) => 
-      prev === images.length - 1 ? 0 : prev + 1
-    )
+    setCurrentImageIndex((prev) => (prev === images.length - 1 ? 0 : prev + 1))
   }
 
   const currentImage = images[currentImageIndex]
@@ -96,25 +92,27 @@ export function ImageGalleryBlock({
               </Heading>
             )}
             {subTitle && (
-              <Paragraph className="text-muted-foreground max-w-3xl mx-auto">
+              <Paragraph className="text-muted-foreground mx-auto max-w-3xl">
                 {subTitle}
               </Paragraph>
             )}
           </div>
         )}
 
-        <div className={`grid grid-cols-1 sm:grid-cols-2 ${gridCols[columns]} ${spacingClasses[spacing]}`}>
+        <div
+          className={`grid grid-cols-1 sm:grid-cols-2 ${gridCols[columns]} ${spacingClasses[spacing]}`}
+        >
           {images.map((galleryImage, index) => (
             <div key={galleryImage.id} className="group relative">
-              <div 
+              <div
                 className={`relative overflow-hidden rounded-lg bg-gray-100 dark:bg-gray-800 ${aspectRatioClasses[aspectRatio]} ${
                   enableLightbox ? "cursor-pointer" : ""
                 }`}
                 onClick={() => openLightbox(index)}
                 onKeyDown={(e) => {
-                  if (e.key === 'Enter' || e.key === ' ') {
-                    e.preventDefault();
-                    openLightbox(index);
+                  if (e.key === "Enter" || e.key === " ") {
+                    e.preventDefault()
+                    openLightbox(index)
                   }
                 }}
                 role="button"
@@ -125,32 +123,39 @@ export function ImageGalleryBlock({
                   className={`object-cover transition-transform duration-300 group-hover:scale-105 ${
                     aspectRatio === "auto" ? "h-auto w-full" : "h-full w-full"
                   }`}
-                  forcedSizes={aspectRatio === "auto" ? undefined : { width: 400, height: 400 }}
+                  forcedSizes={
+                    aspectRatio === "auto"
+                      ? undefined
+                      : { width: 400, height: 400 }
+                  }
                 />
-                
+
                 {enableLightbox && (
                   <div className="absolute inset-0 flex items-center justify-center bg-black/0 transition-all duration-300 group-hover:bg-black/20">
-                    <Expand className="text-white opacity-0 transition-opacity duration-300 group-hover:opacity-100" size={24} />
+                    <Expand
+                      className="text-white opacity-0 transition-opacity duration-300 group-hover:opacity-100"
+                      size={24}
+                    />
                   </div>
                 )}
               </div>
-              
+
               {(showTitles || showDescriptions || galleryImage.link) && (
                 <div className="mt-3">
                   {showTitles && galleryImage.title && (
-                    <h3 className="font-semibold text-foreground mb-1">
+                    <h3 className="text-foreground mb-1 font-semibold">
                       {galleryImage.title}
                     </h3>
                   )}
                   {showDescriptions && galleryImage.description && (
-                    <Paragraph className="text-sm text-muted-foreground mb-2">
+                    <Paragraph className="text-muted-foreground mb-2 text-sm">
                       {galleryImage.description}
                     </Paragraph>
                   )}
                   {galleryImage.link && (
                     <StrapiLink
                       component={galleryImage.link}
-                      className="inline-flex items-center text-sm font-medium text-primary hover:underline"
+                      className="text-primary inline-flex items-center text-sm font-medium hover:underline"
                     />
                   )}
                 </div>
@@ -162,8 +167,8 @@ export function ImageGalleryBlock({
         {/* Lightbox */}
         {enableLightbox && (
           <Dialog open={lightboxOpen} onOpenChange={setLightboxOpen}>
-            <DialogContent className="max-w-7xl w-full p-0 bg-black/90 border-none">
-              <div className="relative flex items-center justify-center min-h-[60vh] max-h-[90vh]">
+            <DialogContent className="w-full max-w-7xl border-none bg-black/90 p-0">
+              <div className="relative flex max-h-[90vh] min-h-[60vh] items-center justify-center">
                 <Button
                   variant="ghost"
                   size="icon"
@@ -172,13 +177,13 @@ export function ImageGalleryBlock({
                 >
                   <X size={24} />
                 </Button>
-                
+
                 {images.length > 1 && (
                   <>
                     <Button
                       variant="ghost"
                       size="icon"
-                      className="absolute left-4 top-1/2 -translate-y-1/2 z-40 text-white hover:bg-white/20"
+                      className="absolute top-1/2 left-4 z-40 -translate-y-1/2 text-white hover:bg-white/20"
                       onClick={previousImage}
                     >
                       <ChevronLeft size={32} />
@@ -186,26 +191,26 @@ export function ImageGalleryBlock({
                     <Button
                       variant="ghost"
                       size="icon"
-                      className="absolute right-4 top-1/2 -translate-y-1/2 z-40 text-white hover:bg-white/20"
+                      className="absolute top-1/2 right-4 z-40 -translate-y-1/2 text-white hover:bg-white/20"
                       onClick={nextImage}
                     >
                       <ChevronRight size={32} />
                     </Button>
                   </>
                 )}
-                
-                <div className="relative w-full h-full flex items-center justify-center p-8">
+
+                <div className="relative flex h-full w-full items-center justify-center p-8">
                   <StrapiBasicImage
                     component={currentImage?.image}
-                    className="max-w-full max-h-full object-contain"
+                    className="max-h-full max-w-full object-contain"
                     useNativeNextImageOnly
                   />
                 </div>
-                
+
                 {(currentImage?.title || currentImage?.description) && (
-                  <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent p-6 text-white">
+                  <div className="absolute right-0 bottom-0 left-0 bg-gradient-to-t from-black/80 to-transparent p-6 text-white">
                     {currentImage.title && (
-                      <h3 className="text-xl font-semibold mb-2">
+                      <h3 className="mb-2 text-xl font-semibold">
                         {currentImage.title}
                       </h3>
                     )}

@@ -6,10 +6,10 @@ import { SessionProvider, signOut, useSession } from "next-auth/react"
 import { ThemeProvider } from "next-themes"
 import { z } from "zod"
 
-import { SiteConfig } from "@/lib/theme"
 import { setupLibraries } from "@/lib/general-helpers"
-import { SiteThemeProvider } from "@/components/theme"
+import { SiteConfig } from "@/lib/theme"
 import { useTranslatedZod } from "@/hooks/useTranslatedZod"
+import { SiteThemeProvider } from "@/components/theme"
 
 // Setup libraries in client environment
 setupLibraries()

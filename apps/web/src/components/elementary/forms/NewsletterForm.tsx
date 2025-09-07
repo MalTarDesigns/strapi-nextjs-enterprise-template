@@ -10,14 +10,14 @@ import { AppForm } from "@/components/forms/AppForm"
 import { Button } from "@/components/ui/button"
 
 export function NewsletterForm() {
-  const form = useForm<z.infer<typeof NewsletterFormSchema>>({
+  const form = useForm<z.infer>({
     resolver: zodResolver(NewsletterFormSchema),
     mode: "onBlur",
     reValidateMode: "onSubmit",
     defaultValues: { email: "" },
   })
 
-  async function onSubmit(values: z.infer<typeof NewsletterFormSchema>) {
+  async function onSubmit(values: z.infer) {
     // TODO: Add submit logic
     // eslint-disable-next-line no-console
     console.log("Form submitted", values)

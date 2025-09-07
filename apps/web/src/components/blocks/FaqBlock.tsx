@@ -52,38 +52,65 @@ export function FaqBlock({
                 </Heading>
               )}
               {subTitle && (
-                <Paragraph className="text-muted-foreground max-w-3xl mx-auto">
+                <Paragraph className="text-muted-foreground mx-auto max-w-3xl">
                   {subTitle}
                 </Paragraph>
               )}
             </div>
           )}
 
-          <Accordion
-            type={allowMultipleOpen ? "multiple" : "single"}
-            collapsible
-            defaultValue={defaultOpenItems}
-            className="w-full space-y-2"
-          >
-            {faqs.map((faq) => (
-              <AccordionItem
-                key={faq.id}
-                value={`item-${faq.id}`}
-                className="border border-border/50 rounded-lg px-6 bg-background/50 backdrop-blur-sm"
-              >
-                <AccordionTrigger className="py-4 text-left text-base font-semibold hover:no-underline">
-                  {faq.question}
-                </AccordionTrigger>
-                <AccordionContent className="pb-4 pt-0">
-                  <div className="prose prose-sm max-w-none dark:prose-invert prose-gray">
-                    <Paragraph className="text-muted-foreground leading-relaxed">
-                      {faq.answer}
-                    </Paragraph>
-                  </div>
-                </AccordionContent>
-              </AccordionItem>
-            ))}
-          </Accordion>
+          {allowMultipleOpen ? (
+            <Accordion
+              type="multiple"
+              defaultValue={defaultOpenItems}
+              className="w-full space-y-2"
+            >
+              {faqs.map((faq) => (
+                <AccordionItem
+                  key={faq.id}
+                  value={`item-${faq.id}`}
+                  className="border-border/50 bg-background/50 rounded-lg border px-6 backdrop-blur-sm"
+                >
+                  <AccordionTrigger className="py-4 text-left text-base font-semibold hover:no-underline">
+                    {faq.question}
+                  </AccordionTrigger>
+                  <AccordionContent className="pt-0 pb-4">
+                    <div className="prose prose-sm dark:prose-invert prose-gray max-w-none">
+                      <Paragraph className="text-muted-foreground leading-relaxed">
+                        {faq.answer}
+                      </Paragraph>
+                    </div>
+                  </AccordionContent>
+                </AccordionItem>
+              ))}
+            </Accordion>
+          ) : (
+            <Accordion
+              type="single"
+              collapsible
+              defaultValue={defaultOpenItems?.[0]}
+              className="w-full space-y-2"
+            >
+              {faqs.map((faq) => (
+                <AccordionItem
+                  key={faq.id}
+                  value={`item-${faq.id}`}
+                  className="border-border/50 bg-background/50 rounded-lg border px-6 backdrop-blur-sm"
+                >
+                  <AccordionTrigger className="py-4 text-left text-base font-semibold hover:no-underline">
+                    {faq.question}
+                  </AccordionTrigger>
+                  <AccordionContent className="pt-0 pb-4">
+                    <div className="prose prose-sm dark:prose-invert prose-gray max-w-none">
+                      <Paragraph className="text-muted-foreground leading-relaxed">
+                        {faq.answer}
+                      </Paragraph>
+                    </div>
+                  </AccordionContent>
+                </AccordionItem>
+              ))}
+            </Accordion>
+          )}
         </div>
       </Container>
     </section>

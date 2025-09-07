@@ -1,5 +1,5 @@
 import { Data } from "@repo/strapi"
-import { Star, Quote } from "lucide-react"
+import { Quote, Star } from "lucide-react"
 
 import { Container } from "@/components/elementary/Container"
 import { StrapiBasicImage } from "@/components/page-builder/components/utilities/StrapiBasicImage"
@@ -56,22 +56,23 @@ export function TestimonialBlock({
   }
 
   const renderTestimonial = (testimonial: TestimonialItem) => (
-    <Card key={testimonial.id} className="h-full border-0 bg-background/60 backdrop-blur-sm">
+    <Card
+      key={testimonial.id}
+      className="bg-background/60 h-full border-0 backdrop-blur-sm"
+    >
       <CardContent className="p-6">
-        {showQuotes && (
-          <Quote className="mb-4 h-8 w-8 text-primary/20" />
-        )}
-        
+        {showQuotes && <Quote className="text-primary/20 mb-4 h-8 w-8" />}
+
         {showRating && testimonial.rating && (
           <div className="mb-4 flex items-center gap-1">
             {renderStars(testimonial.rating)}
           </div>
         )}
-        
+
         <Paragraph className="mb-6 text-base leading-relaxed">
           &ldquo;{testimonial.content}&rdquo;
         </Paragraph>
-        
+
         <div className="flex items-center gap-3">
           {testimonial.authorImage && (
             <div className="h-12 w-12 overflow-hidden rounded-full">
@@ -83,11 +84,11 @@ export function TestimonialBlock({
             </div>
           )}
           <div>
-            <p className="font-semibold text-foreground">
+            <p className="text-foreground font-semibold">
               {testimonial.authorName}
             </p>
             {(testimonial.authorTitle || testimonial.authorCompany) && (
-              <p className="text-sm text-muted-foreground">
+              <p className="text-muted-foreground text-sm">
                 {testimonial.authorTitle}
                 {testimonial.authorTitle && testimonial.authorCompany && " at "}
                 {testimonial.authorCompany}
@@ -110,15 +111,15 @@ export function TestimonialBlock({
               </Heading>
             )}
             {subTitle && (
-              <Paragraph className="text-muted-foreground max-w-3xl mx-auto">
+              <Paragraph className="text-muted-foreground mx-auto max-w-3xl">
                 {subTitle}
               </Paragraph>
             )}
           </div>
         )}
 
-        {layout === "single" && testimonials.length > 0 ? (
-          <div className="max-w-4xl mx-auto">
+        {layout === "single" && testimonials.length > 0 && testimonials[0] ? (
+          <div className="mx-auto max-w-4xl">
             {renderTestimonial(testimonials[0])}
           </div>
         ) : layout === "grid" ? (
