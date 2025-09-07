@@ -1,4 +1,10 @@
 // ============================================================================
+// ADDITIONAL CONTENT TYPE INTERFACES
+// ============================================================================
+
+import type { UID } from "@repo/strapi"
+
+// ============================================================================
 // STRAPI CONTENT TYPES INTERFACES
 // ============================================================================
 // Re-export from the main strapi client for convenience
@@ -11,10 +17,10 @@ export type {
   UtilityImageWithLink,
   UtilityText,
   UtilityAccordion,
-  
+
   // SEO types
   SeoUtilitiesSeo,
-  
+
   // Block component types
   SectionsHero,
   SectionsHeadingWithCtaButton,
@@ -27,22 +33,16 @@ export type {
   FormsNewsletterForm,
   UtilitiesCkEditorContent,
   BlockComponent,
-  
+
   // Main content types
   Page,
   Site,
   NavigationItem,
   Post,
-  
+
   // Client types
   StrapiClientOptions,
-} from '@/lib/strapi'
-
-// ============================================================================
-// ADDITIONAL CONTENT TYPE INTERFACES
-// ============================================================================
-
-import type { UID } from "@repo/strapi"
+} from "@/lib/strapi"
 
 // Extended block props that include page context
 export interface StrapiBlockProps {
@@ -59,12 +59,9 @@ export interface BlockComponentProps {
 }
 
 // Enhanced page interface with navigation context
-export interface PageWithContext extends Omit<import('@/lib/strapi').Page, 'content'> {
+export interface PageWithContext extends Omit {
   content?: StrapiBlockProps[]
-  breadcrumbs?: Array<{
-    title: string
-    fullPath: string
-  }>
+  breadcrumbs?: Array
   parent?: PageWithContext | null
   children?: PageWithContext[]
 }
@@ -73,37 +70,33 @@ export interface PageWithContext extends Omit<import('@/lib/strapi').Page, 'cont
 export interface SiteConfig {
   title?: string
   description?: string
-  favicon?: import('@/lib/strapi').StrapiImageMedia
-  logo?: import('@/lib/strapi').StrapiImageMedia
-  defaultSeo?: import('@/lib/strapi').SeoUtilitiesSeo
+  favicon?: import("@/lib/strapi").StrapiImageMedia
+  logo?: import("@/lib/strapi").StrapiImageMedia
+  defaultSeo?: import("@/lib/strapi").SeoUtilitiesSeo
 }
 
 // Navigation structure
 export interface NavigationStructure {
-  main: import('@/lib/strapi').NavigationItem[]
-  footer: import('@/lib/strapi').NavigationItem[]
-  mobile?: import('@/lib/strapi').NavigationItem[]
+  main: import("@/lib/strapi").NavigationItem[]
+  footer: import("@/lib/strapi").NavigationItem[]
+  mobile?: import("@/lib/strapi").NavigationItem[]
 }
 
 // Post with category and tags
-export interface PostWithMeta extends import('@/lib/strapi').Post {
+export interface PostWithMeta extends Post {
   category?: {
     id: number
     name: string
     slug: string
   }
-  tags?: Array<{
-    id: number
-    name: string
-    slug: string
-  }>
+  tags?: Array
   author?: {
     id: number
     name: string
     email?: string
-    avatar?: import('@/lib/strapi').StrapiImageMedia
+    avatar?: import("@/lib/strapi").StrapiImageMedia
   }
-  featuredImage?: import('@/lib/strapi').StrapiImageMedia
+  featuredImage?: import("@/lib/strapi").StrapiImageMedia
   readingTime?: number
 }
 
@@ -123,7 +116,7 @@ export interface CollectionResponse<T> {
 // Single response
 export interface SingleResponse<T> {
   data: T | null
-  meta: Record<string, any>
+  meta: Record
 }
 
 // Strapi API error
@@ -131,7 +124,7 @@ export interface StrapiError {
   status: number
   name: string
   message: string
-  details?: Record<string, any>
+  details?: Record
 }
 
 // Locale information
@@ -190,24 +183,24 @@ export interface DynamicZoneContent {
 
 // Component mapping type
 export type ComponentMap = {
-  [K in UID.Component]?: React.ComponentType<BlockComponentProps>
+  [K in UID.Component]?: React.ComponentType
 }
 
 // Content status
-export type ContentStatus = 'published' | 'draft' | 'archived'
+export type ContentStatus = "published" | "draft" | "archived"
 
 // Media formats available in Strapi
-export type MediaFormat = 'thumbnail' | 'small' | 'medium' | 'large'
+export type MediaFormat = "thumbnail" | "small" | "medium" | "large"
 
 // Available component UIDs for type safety
-export type AvailableComponents = 
-  | 'sections.hero'
-  | 'sections.heading-with-cta-button'
-  | 'sections.image-with-cta-button'
-  | 'sections.horizontal-images'
-  | 'sections.faq'
-  | 'sections.carousel'
-  | 'sections.animated-logo-row'
-  | 'forms.contact-form'
-  | 'forms.newsletter-form'
-  | 'utilities.ck-editor-content'
+export type AvailableComponents =
+  | "sections.hero"
+  | "sections.heading-with-cta-button"
+  | "sections.image-with-cta-button"
+  | "sections.horizontal-images"
+  | "sections.faq"
+  | "sections.carousel"
+  | "sections.animated-logo-row"
+  | "forms.contact-form"
+  | "forms.newsletter-form"
+  | "utilities.ck-editor-content"

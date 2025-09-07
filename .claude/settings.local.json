@@ -6,7 +6,8 @@
       "WebFetch(domain:raw.githubusercontent.com)",
       "Bash(npm run lint)",
       "mcp__vercel__list_teams",
-      "Bash(pnpm build:*)"
+      "Bash(pnpm build:*)",
+      "Bash(pnpm run build:web:*)"
     ],
     "deny": [],
     "ask": []

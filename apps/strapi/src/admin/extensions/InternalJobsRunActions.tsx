@@ -1,5 +1,4 @@
 import { useState } from "react";
-import { Button, Flex } from "@strapi/design-system";
 import {
   unstable_useContentManagerContext,
   useNotification,
@@ -60,18 +59,24 @@ const InternalJobsRunActions = () => {
   };
 
   return (
-    <Flex gap={3}>
+    <div style={{ display: "flex", gap: "12px" }}>
       {JOBS.map((job) => (
-        <Button
+        <button
           key={job.jobType}
           onClick={() => runJob(job.jobType)}
-          loading={loading}
-          variant="secondary"
+          disabled={loading}
+          style={{
+            padding: "8px 16px",
+            backgroundColor: loading ? "#ccc" : "#f0f0f0",
+            border: "1px solid #ddd",
+            borderRadius: "4px",
+            cursor: loading ? "not-allowed" : "pointer",
+          }}
         >
-          {job.label}
-        </Button>
+          {loading ? "Loading..." : job.label}
+        </button>
       ))}
-    </Flex>
+    </div>
   );
 };
 
